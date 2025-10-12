@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
+import { signIn } from "next-auth/react";
 
 const LoginPage = () => {
   const [data, setData] = useState({ email: "", password: "" });
@@ -15,20 +16,22 @@ const LoginPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: { "Content-type": "application/json" },
+    const res = await signIn("credentials", {
+      redirect: false,
+      email: data.email,
+      password: data.password,
     });
 
-    const result = await res.json();
-
-    if (res.ok) {
-      toast.success(result.message);
-      router.push("/");
+    if (res?.error) {
+      toast.error("Sai thông tin đăng nhập");
     } else {
-      toast.error(result.message);
+      toast.success("Đăng nhập thành công!");
+      router.push("/"); // chuyển về trang chủ
     }
+  };
+
+  const handleGoogleLogin = () => {
+    signIn("google", { callbackUrl: "/" });
   };
 
   return (
@@ -98,12 +101,21 @@ const LoginPage = () => {
           </a>
         </div>
 
-        <button
-          type="submit"
-          className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-lg font-medium hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-md hover:shadow-lg"
-        >
-          Đăng Nhập
-        </button>
+        <div className="flex justify-between gap-3">
+          <button
+            type="submit"
+            className="w-full max-h-15 bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-lg font-medium hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-md hover:shadow-lg"
+          >
+            Đăng Nhập
+          </button>
+          <button
+            type="button"
+            onClick={handleGoogleLogin}
+            className="w-full max-h-15 bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-lg font-medium hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-md hover:shadow-lg"
+          >
+            Đăng nhập Google
+          </button>
+        </div>
 
         <div className="text-center pt-4 border-t border-gray-100">
           <p className="text-sm text-gray-600">
