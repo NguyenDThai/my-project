@@ -64,6 +64,23 @@ export const authOptions: NextAuthOptions = {
   },
 
   callbacks: {
+    async signIn({ user, account }) {
+      await connectDB();
+      const existingUser = await User.findOne({ email: user.email });
+
+      // Neu chua co thi tao moi user
+      if (!existingUser) {
+        await User.create({
+          name: user.name,
+          email: user.email,
+          image: user.image || "",
+          provider: account?.provider || "credentials",
+        });
+      }
+
+      return true;
+    },
+
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
