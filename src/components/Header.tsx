@@ -67,7 +67,7 @@ const Header = () => {
                 />
               </svg>
               <span className="absolute -top-2 -right-2 bg-orange-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
-                3
+                0
               </span>
             </button>
 
@@ -104,7 +104,7 @@ const Header = () => {
                 <div className="py-1">
                   {[
                     {
-                      href: "/profile",
+                      href: "/user/profile",
                       text: "Tài khoản",
                       icon: "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z",
                     },
