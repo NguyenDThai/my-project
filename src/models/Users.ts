@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema(
     email: { type: String, required: true, unique: true },
     password: { type: String, required: false, minLength: 6 },
     image: { type: String, default: "" },
+    role: { type: String, default: "user" },
     provider: { type: String, default: "credentials" }, //Để biết user đăng nhập bằng hình thức gì
   },
   { timestamps: true }

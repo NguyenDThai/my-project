@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 
@@ -10,6 +11,8 @@ const RegisterPage = () => {
     password: "",
     confirmPassword: "",
   });
+
+  const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setData({ ...data, [e.target.name]: e.target.value });
@@ -28,6 +31,7 @@ const RegisterPage = () => {
     if (res.ok) {
       toast.success(result.message);
       setData({ name: "", email: "", password: "", confirmPassword: "" });
+      router.push("/login");
     } else if (res.status === 400) {
       toast.error(result.message);
     }
@@ -59,7 +63,7 @@ const RegisterPage = () => {
               value={data.name}
               onChange={handleChange}
               placeholder="Nhập họ và tên của bạn"
-              className="w-full px-4 py-3 border border-gray-300 text-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+              className="w-full outline-none px-4 py-3 border border-gray-300 text-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
               required
             />
           </div>
@@ -78,7 +82,7 @@ const RegisterPage = () => {
               placeholder="Nhập email của bạn"
               value={data.email}
               onChange={handleChange}
-              className="w-full px-4 py-3 border border-gray-300 text-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+              className="w-full outline-none px-4 py-3 border border-gray-300 text-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
               required
             />
           </div>
@@ -97,7 +101,7 @@ const RegisterPage = () => {
               placeholder="Nhập mật khẩu của bạn"
               value={data.password}
               onChange={handleChange}
-              className="w-full px-4 py-3 border border-gray-300 text-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+              className="w-full outline-none px-4 py-3 border border-gray-300 text-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
               required
             />
           </div>
@@ -115,7 +119,7 @@ const RegisterPage = () => {
               placeholder="Nhập lại mật khẩu của bạn"
               value={data.confirmPassword}
               onChange={handleChange}
-              className="w-full px-4 py-3 border border-gray-300 text-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+              className="w-full outline-none px-4 py-3 border border-gray-300 text-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
               required
             />
           </div>

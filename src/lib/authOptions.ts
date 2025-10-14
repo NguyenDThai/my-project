@@ -50,6 +50,7 @@ export const authOptions: NextAuthOptions = {
           id: user._id.toString(),
           name: user.name,
           email: user.email,
+          role: user.role,
         };
       },
     }),
@@ -66,6 +67,7 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async signIn({ user, account }) {
       await connectDB();
+
       const existingUser = await User.findOne({ email: user.email });
 
       // Neu chua co thi tao moi user
