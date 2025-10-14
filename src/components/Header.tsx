@@ -3,27 +3,65 @@
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 
 const Header = () => {
   const { data: session, status } = useSession();
+  const [isScroll, setIsScroll] = useState(false);
+
+  useEffect(() => {
+    const lastScrolly = window.scrollY;
+
+    const handleScroll = () => {
+      if (window.scrollY > lastScrolly && window.scrollY > 50) {
+        setIsScroll(true);
+      } else if (window.scrollY < lastScrolly) {
+        setIsScroll(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
-    <header className="fixed w-full flex items-center justify-between px-8 py-3 bg-gradient-to-r from-white to-gray-50 shadow-md border-b border-gray-100 top-0 z-50 max-h-16">
+    <motion.header
+      initial={false}
+      animate={{
+        height: isScroll ? "60px" : "80px",
+        backgroundColor: isScroll ? "rgba(255,255,255,0.95)" : "#ffffff",
+        boxShadow: isScroll
+          ? "0 2px 8px rgba(0,0,0,0.1)"
+          : "0 1px 4px rgba(0,0,0,0.05)",
+      }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
+      className="fixed w-full flex items-center justify-between px-8 top-0 z-50 border-b border-gray-100 backdrop-blur-md"
+    >
       {/* Logo */}
       <Link href="/" className="flex items-center">
-        <Image
-          src="/header-logo.png"
-          alt="header-logo"
-          width={100}
-          height={40}
-          className="object-contain max-h-16 rounded-2xl"
-        />
+        <motion.div transition={{ duration: 0.3, ease: "easeInOut" }}>
+          <Image
+            src="/header-logo.png"
+            alt="header-logo"
+            width={isScroll ? 80 : 100}
+            height={isScroll ? 32 : 40}
+            className="object-contain rounded-2xl max-h-full"
+            style={{ maxHeight: isScroll ? "60px" : "80px" }}
+          />
+        </motion.div>
       </Link>
 
       {/* Navigation Menu */}
       <nav className="flex-1 max-w-3xl mx-10">
-        <ul className="flex items-center justify-center gap-8 text-gray-800 font-medium text-base">
+        <ul
+          className={`flex items-center justify-center gap-8 font-medium text-gray-800 ${
+            isScroll ? "text-sm" : "text-base"
+          } transition-all duration-300`}
+        >
           {["Trang Chủ", "Menu", "Giới Thiệu", "Liên Hệ"].map((item, index) => (
             <li key={index}>
               <Link
@@ -52,7 +90,10 @@ const Header = () => {
         ) : session ? (
           <div className="flex items-center gap-4">
             {/* Cart Icon */}
-            <button className="relative p-1 text-gray-600 hover:text-orange-600 ">
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              className="relative p-1 text-gray-600 hover:text-orange-600"
+            >
               <svg
                 className="w-6 h-6"
                 fill="none"
@@ -69,18 +110,25 @@ const Header = () => {
               <span className="absolute -top-2 -right-2 bg-orange-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
                 0
               </span>
-            </button>
+            </motion.button>
 
             {/* User Avatar & Dropdown */}
             <div className="relative group">
               <div className="flex items-center gap-2 cursor-pointer">
-                <Image
-                  src={session.user?.image || "/default-image.jpg"}
-                  alt="User avatar"
-                  width={36}
-                  height={36}
-                  className="rounded-full border-2 border-gray-200 group-hover:border-orange-600 transition-all duration-300"
-                />
+                <motion.div
+                  animate={{
+                    scale: isScroll ? 0.9 : 1,
+                  }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <Image
+                    src={session.user?.image || "/default-image.jpg"}
+                    alt="User avatar"
+                    width={36}
+                    height={36}
+                    className="rounded-full border-2 border-gray-200 group-hover:border-orange-600 transition-all duration-300"
+                  />
+                </motion.div>
                 <span className="text-gray-800 font-medium max-w-32 truncate group-hover:text-orange-600 transition-colors duration-300 text-sm">
                   {session.user?.name}
                 </span>
@@ -136,8 +184,6 @@ const Header = () => {
                     </Link>
                   ))}
                   <hr className="my-1 border-gray-100" />
-
-                  {/* Dang xuat or dang nhap */}
                   <button
                     onClick={() => signOut({ callbackUrl: "/" })}
                     className="flex items-center gap-2 w-full px-4 py-2 text-red-600 hover:bg-red-50 hover:text-red-700 transition-all duration-300 rounded-md text-sm text-left cursor-pointer"
@@ -162,16 +208,17 @@ const Header = () => {
             </div>
           </div>
         ) : (
-          <div className="flex items-center gap-3">
-            <Link href="/login">
-              <button className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-1.5 rounded-full font-medium transition-all duration-300 shadow-sm hover:shadow-md transform hover:scale-105 text-sm">
-                Đăng nhập
-              </button>
-            </Link>
-          </div>
+          <Link href="/login">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-1.5 rounded-full font-medium transition-all duration-300 shadow-sm hover:shadow-md text-sm"
+            >
+              Đăng nhập
+            </motion.button>
+          </Link>
         )}
       </div>
-    </header>
+    </motion.header>
   );
 };
 

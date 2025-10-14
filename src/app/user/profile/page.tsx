@@ -2,6 +2,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
 type UserProfile = {
@@ -58,6 +59,16 @@ const ProfileUser = () => {
         {profile.name}
       </h2>
       <p className="text-gray-600 text-sm">{profile.email}</p>
+
+      <div className="w-full flex items-center justify-between gap-2 mt-10">
+        <button className="w-full bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg transition duration-300 font-semibold">
+          Chỉnh sửa
+        </button>
+
+        <button className="w-full bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg transition duration-300 font-semibold">
+          <Link href={"/"}>Về trang chủ</Link>
+        </button>
+      </div>
     </div>
   );
 };
