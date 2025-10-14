@@ -3,7 +3,7 @@
 const categories = [
   { id: 1, name: "Pizza", icon: "🍕", count: 15 },
   { id: 2, name: "Burger", icon: "🍔", count: 12 },
-  { id: 3, name: "Món Việt", icon: "🍜", count: 20 },
+  { id: 3, name: "Gà Rán", icon: "🍗", count: 20 },
   { id: 4, name: "Tráng Miệng", icon: "🍰", count: 8 },
   { id: 5, name: "Đồ Uống", icon: "🥤", count: 10 },
   { id: 6, name: "Combo", icon: "🎁", count: 5 },

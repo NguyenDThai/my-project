@@ -14,7 +14,7 @@ const Header = () => {
     const lastScrolly = window.scrollY;
 
     const handleScroll = () => {
-      if (window.scrollY > lastScrolly && window.scrollY > 50) {
+      if (window.scrollY > lastScrolly && window.scrollY > 30) {
         setIsScroll(true);
       } else if (window.scrollY < lastScrolly) {
         setIsScroll(false);

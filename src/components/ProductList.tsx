@@ -23,11 +23,11 @@ const products = [
   },
   {
     id: 3,
-    name: "Phở Bò Hà Nội",
-    price: 45000,
-    image: "/pho-bo.jpg",
+    name: "Gà rán",
+    price: 33000,
+    image: "/garan.png",
     rating: 4.9,
-    description: "Phở bò truyền thống Hà Nội",
+    description: "Gà giòn vui vẻ giữa mùa thu",
   },
   {
     id: 4,
