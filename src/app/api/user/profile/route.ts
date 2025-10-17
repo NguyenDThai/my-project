@@ -41,6 +41,7 @@ export async function GET() {
 export async function PUT(req: Request) {
   try {
     const session = await getServerSession(authOptions);
+
     if (!session || !session.user) {
       return NextResponse.json(
         { message: "Vui lòng đăng nhập" },
@@ -51,8 +52,10 @@ export async function PUT(req: Request) {
     await connectDB();
     const { name, address, phone } = await req.json();
 
+    const user = await User.findOne({ email: session.user.email });
+
     const updatedUser = await User.findByIdAndUpdate(
-      session.user.id,
+      user._id,
       {
         name,
         address,
