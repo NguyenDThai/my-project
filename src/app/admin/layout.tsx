@@ -1,3 +1,4 @@
+import BtnSignOut from "@/components/BtnSignOut";
 import { authOptions } from "@/lib/authOptions";
 import { getServerSession } from "next-auth";
 import Image from "next/image";
@@ -62,15 +63,18 @@ const AdminLayout = async ({ children }: { children: React.ReactNode }) => {
             </nav>
           </div>
 
-          <div className="flex items-center gap-2">
-            <Image
-              src="/admin.jpg"
-              alt="admin-avatar"
-              width={100}
-              height={100}
-              className="bg-transparent rounded-full w-13 h-13"
-            />
-            <p>Hello Admin</p>
+          <div className="flex flex-col items-center gap-2">
+            <div className="flex items-center w-full gap-2">
+              <Image
+                src="/admin.jpg"
+                alt="admin-avatar"
+                width={100}
+                height={100}
+                className="bg-transparent rounded-full w-13 h-13"
+              />
+              <p>Hello Admin</p>
+            </div>
+            <BtnSignOut className="text-white" />
           </div>
         </div>
       </aside>
