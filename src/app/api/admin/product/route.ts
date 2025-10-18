@@ -74,3 +74,44 @@ export async function POST(request: Request) {
     );
   }
 }
+
+export async function GET() {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      return NextResponse.json(
+        { message: "Bạn chưa đăng nhập" },
+        { status: 401 }
+      );
+    }
+
+    if (session.user.role !== "admin") {
+      return NextResponse.json(
+        {
+          message: "Chức năng chỉ được phép sử dụng bởi Admin",
+        },
+        { status: 403 }
+      );
+    }
+
+    await connectDB();
+
+    const products = await Product.find({}).select(
+      "name price category description image"
+    );
+
+    return NextResponse.json(
+      {
+        message: "Lấy tất cả sản phẩm thành công",
+        products,
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error getting product:", error);
+    return NextResponse.json(
+      { message: "Lỗi khi lấy sản phẩm" },
+      { status: 500 }
+    );
+  }
+}

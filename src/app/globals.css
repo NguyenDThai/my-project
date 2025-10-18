@@ -10,3 +10,37 @@ ol,
 ul {
   list-style: none;
 }
+
+.menu-page-background {
+  position: relative;
+  min-height: 100vh;
+}
+
+.menu-page-background::before {
+  content: "";
+  position: absolute;
+  top: 250px;
+  left: 0;
+  right: 0;
+  height: 800px;
+  background-image: url("/bg-top.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: top center;
+  z-index: 0;
+  pointer-events: none;
+  width: 100%;
+  margin-left: calc(-50vw + 50%); /* Căn giữa full width */
+}
+
+.menu-content {
+  position: relative;
+  z-index: 10;
+  min-height: 80vh; /* Content luôn chiếm ít nhất 80% viewport */
+}
+
+@media (max-width: 1023px) {
+  .menu-page-background::before {
+    display: none;
+  }
+}

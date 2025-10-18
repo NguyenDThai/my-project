@@ -1,355 +1,190 @@
 "use client";
 
-import {
-  type ProductFormData,
-  productSchema,
-  validateProductImage,
-} from "@/types/product";
-import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
-import React, { useRef, useState } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "react-toastify";
+import Link from "next/link";
+import React, { useEffect, useState } from "react";
 
-const ProductPageAdmin = () => {
-  const [imageError, setImageError] = useState<string | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+export type Products = {
+  name: string;
+  price: number;
+  category: string;
+  description?: string;
+  image: string;
+}[];
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-    setError,
-    reset,
-    clearErrors,
-  } = useForm<ProductFormData>({
-    resolver: zodResolver(productSchema),
-    defaultValues: {
-      category: undefined,
-      price: undefined,
-    },
-  });
+const AdminProductPage = () => {
+  const [products, setProducts] = useState<Products | []>([]);
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
+  useEffect(() => {
+    const fetchProduct = async () => {
+      const res = await fetch("/api/admin/product");
+      const data = await res.json();
 
-    setImagePreview(null);
-    setImageError(null);
-    setSelectedFile(null);
+      setProducts(data.products);
+    };
 
-    clearErrors("image");
-
-    if (!files || files.length === 0) {
-      return;
-    }
-
-    const file = files[0];
-    const error = validateProductImage(files);
-    if (error) {
-      setImageError(error);
-      setError("image", { message: error });
-      return;
-    }
-
-    // Tạo preview URL
-    setSelectedFile(file);
-    const previewUrl = URL.createObjectURL(file);
-    setImagePreview(previewUrl);
-  };
-
-  const onSubmit = async (data: ProductFormData) => {
-    try {
-      if (selectedFile) {
-        const files = fileInputRef.current?.files;
-        const imageError = validateProductImage(files || null);
-
-        if (imageError) {
-          setImageError(imageError);
-          return;
-        }
-      }
-
-      const formData = new FormData();
-      formData.append("name", data.name);
-      formData.append("description", data.description || "");
-      formData.append("category", data.category);
-      formData.append("price", data.price.toString());
-
-      if (selectedFile) {
-        formData.append("image", selectedFile);
-      }
-
-      const response = await fetch("/api/admin/product", {
-        method: "POST",
-        body: formData,
-      });
-
-      const result = await response.json();
-      if (!response.ok) {
-        toast.error(result.message);
-      }
-
-      toast.success(result.message);
-
-      reset();
-      setImagePreview(null);
-      setImageError(null);
-    } catch (error) {
-      console.error("Error submitting form:", error);
-    }
-  };
-
-  const handleRemoveImage = () => {
-    setImagePreview(null);
-    setImageError(null);
-    setSelectedFile(null);
-    clearErrors("image");
-
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-  };
+    fetchProduct();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">
-            Quản lý sản phẩm
-          </h2>
-          <p className="text-gray-600">Thêm sản phẩm mới vào menu</p>
+        <div className="mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">
+                Quản lý sản phẩm
+              </h1>
+              <p className="text-gray-600 mt-2">
+                Danh sách tất cả sản phẩm trong menu
+              </p>
+            </div>
+            <Link href="/admin/product/add">
+              <button className="mt-4 sm:mt-0 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex items-center gap-2">
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 4v16m8-8H4"
+                  />
+                </svg>
+                Thêm sản phẩm mới
+              </button>
+            </Link>
+          </div>
         </div>
 
-        {/* Form */}
-        <form
-          className="bg-white rounded-2xl shadow-lg p-6 sm:p-8"
-          onSubmit={handleSubmit(onSubmit)}
-        >
-          <div className="space-y-6">
-            {/* Tên sản phẩm */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Tên sản phẩm <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                id="name"
-                placeholder="Nhập tên sản phẩm"
-                {...register("name")}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors placeholder-gray-400 ${
-                  errors.name ? "border-red-500" : "border-gray-300"
-                }`}
-              />
-
-              {errors.name && (
-                <p className="mt-1 text-sm text-red-500">
-                  {errors.name.message}
-                </p>
-              )}
-            </div>
-
-            {/* Mô tả sản phẩm */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Mô tả sản phẩm
-              </label>
-              <textarea
-                id="description"
-                rows={3}
-                placeholder="Nhập mô tả cho sản phẩm"
-                {...register("description")}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors placeholder-gray-400 resize-none ${
-                  errors.description ? "border-red-500" : "border-gray-300"
-                }`}
-              />
-
-              {errors.description && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.description.message}
-                </p>
-              )}
-            </div>
-
-            {/* Loại sản phẩm và Giá */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Loại sản phẩm */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Loại sản phẩm <span className="text-red-500">*</span>
-                </label>
-                <select
-                  id="category"
-                  {...register("category")}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors bg-white ${
-                    errors.category ? "border-red-500" : "border-gray-300"
-                  }`}
-                >
-                  <option value="">Chọn loại đồ ăn</option>
-                  <option value="chickenfried">Gà Rán</option>
-                  <option value="combo">Combo</option>
-                  <option value="hamburger">Hamburger</option>
-                  <option value="pizza">Pizza</option>
-                  <option value="drink">Đồ Uống</option>
-                  <option value="dessert">Tráng Miệng</option>
-                </select>
-
-                {errors.category && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {errors.category.message}
-                  </p>
-                )}
+        {/* Products Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {products.map((product, index) => (
+            <div
+              key={index}
+              className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300"
+            >
+              {/* Product Image */}
+              <div className="relative h-48 bg-gray-100">
+                <Image
+                  src={product.image}
+                  alt="image_product"
+                  fill
+                  className="object-cover"
+                />
               </div>
 
-              {/* Giá sản phẩm */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Giá sản phẩm <span className="text-red-500">*</span>
-                </label>
-                <div className="relative">
-                  <input
-                    type="number"
-                    placeholder="0"
-                    min="0"
-                    className={`w-full px-4 py-3 pl-12 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors ${
-                      errors.price ? "border-red-500" : "border-gray-300"
-                    }`}
-                    {...register("price", { valueAsNumber: true })}
-                  />
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <span className="text-gray-500">₫</span>
-                  </div>
-                </div>
+              {/* Product Info */}
+              <div className="p-4">
+                <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-1">
+                  {product.name}
+                </h3>
+                <p className="text-2xl font-bold text-orange-600 mb-4">
+                  {new Intl.NumberFormat("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  }).format(product.price)}
+                </p>
 
-                {errors.price && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {errors.price.message}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            {/* Hình ảnh sản phẩm (thêm mới) */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Hình ảnh sản phẩm
-              </label>
-
-              {/* Image preview */}
-
-              {imagePreview && (
-                <div className="mb-4 relative inline-block">
-                  <Image
-                    src={imagePreview}
-                    alt="Preview"
-                    width={128}
-                    height={128}
-                    className="h-32 w-32 object-cover rounded-lg border"
-                  />
+                {/* Action Buttons */}
+                <div className="flex gap-2">
                   <button
-                    type="button"
-                    onClick={handleRemoveImage}
-                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600 transition-colors"
+                    onClick={() => {
+                      /* Handle edit */
+                    }}
+                    className="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-2 px-3 rounded-lg transition-colors duration-200 font-medium text-sm flex items-center justify-center gap-1"
                   >
-                    ×
-                  </button>
-                </div>
-              )}
-
-              <div className="flex items-center justify-center w-full">
-                <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
-                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
                     <svg
-                      className="w-8 h-8 mb-4 text-gray-500"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
+                      className="w-4 h-4"
                       fill="none"
-                      viewBox="0 0 20 16"
-                    >
-                      <path
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                      />
-                    </svg>
-                    <p className="mb-2 text-sm text-gray-500">
-                      <span className="font-semibold">Click để upload</span>{" "}
-                      hoặc kéo thả
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      PNG, JPG, WEBP (MAX. 5MB)
-                    </p>
-                  </div>
-                  <input
-                    type="file"
-                    id="image"
-                    className="hidden"
-                    accept="image/jpeg,image/png,image/webp"
-                    {...register("image")}
-                    onChange={handleImageChange}
-                    ref={fileInputRef}
-                  />
-                </label>
-              </div>
-              {(errors.image || imageError) && (
-                <p className="mt-1 text-sm text-red-600">
-                  {typeof errors.image?.message === "string"
-                    ? errors.image.message
-                    : imageError}
-                </p>
-              )}
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex gap-4 pt-4">
-              <button
-                type="button"
-                className="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-3 px-6 rounded-lg transition-all duration-300 font-semibold shadow-md hover:shadow-lg"
-              >
-                Hủy bỏ
-              </button>
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 disabled:from-orange-400 disabled:to-orange-400 text-white py-3 px-6 rounded-lg transition-all duration-300 font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 disabled:transform-none flex items-center justify-center"
-              >
-                {isSubmitting ? (
-                  <>
-                    <svg
-                      className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                      fill="none"
+                      stroke="currentColor"
                       viewBox="0 0 24 24"
                     >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
                       <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      ></path>
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                      />
                     </svg>
-                    Đang xử lý...
-                  </>
-                ) : (
-                  "Thêm sản phẩm"
-                )}
+                    Sửa
+                  </button>
+                  <button
+                    onClick={() => {
+                      /* Handle delete */
+                    }}
+                    className="flex-1 bg-red-500 hover:bg-red-600 text-white py-2 px-3 rounded-lg transition-colors duration-200 font-medium text-sm flex items-center justify-center gap-1"
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                      />
+                    </svg>
+                    Xóa
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Empty State */}
+        {products.length === 0 && (
+          <div className="text-center py-12">
+            <div className="bg-white rounded-2xl shadow-lg p-8 max-w-md mx-auto">
+              <svg
+                className="w-16 h-16 text-gray-400 mx-auto mb-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+                />
+              </svg>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                Chưa có sản phẩm nào
+              </h3>
+              <p className="text-gray-600 mb-4">
+                Bắt đầu bằng cách thêm sản phẩm đầu tiên vào menu.
+              </p>
+              <button className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold py-2 px-6 rounded-lg transition-all duration-300 flex items-center gap-2 mx-auto">
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 4v16m8-8H4"
+                  />
+                </svg>
+                Thêm sản phẩm mới
               </button>
             </div>
           </div>
-        </form>
+        )}
       </div>
     </div>
   );
 };
 
-export default ProductPageAdmin;
+export default AdminProductPage;

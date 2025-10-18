@@ -17,7 +17,6 @@ export default function Home() {
 
   return (
     <main className="bg-white max-h-screen">
-      <Header />
       <HeroSection />
       <Categories />
       <ProductList />
