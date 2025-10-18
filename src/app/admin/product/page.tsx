@@ -9,6 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import React, { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 const ProductPageAdmin = () => {
   const [imageError, setImageError] = useState<string | null>(null);
@@ -80,10 +81,18 @@ const ProductPageAdmin = () => {
         formData.append("image", selectedFile);
       }
 
-      console.log("Form Data:", {
-        ...data,
-        image: selectedFile ? selectedFile.name : "No file seleted",
+      const response = await fetch("/api/admin/product", {
+        method: "POST",
+        body: formData,
       });
+
+      const result = await response.json();
+      if (!response.ok) {
+        toast.error(result.message);
+      }
+
+      toast.success(result.message);
+
       reset();
       setImagePreview(null);
       setImageError(null);
