@@ -37,7 +37,7 @@ const AdminLayout = async ({ children }: { children: React.ReactNode }) => {
                 Quản lý người dùng
               </a>
               <a
-                href="/admin/products"
+                href="/admin/product"
                 className="block py-2 px-3 rounded hover:bg-orange-300"
               >
                 Quản lý sản phẩm

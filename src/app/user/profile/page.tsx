@@ -113,7 +113,7 @@ const ProfileUser = () => {
           {/* Avatar Preview */}
           <div className="flex flex-col items-center mb-4">
             <Image
-              src={"/default-image.jpg"}
+              src={profile.image || "/default-image.jpg"}
               alt="avatar preview"
               width={100}
               height={100}
