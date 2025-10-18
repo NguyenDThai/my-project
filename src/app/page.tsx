@@ -17,6 +17,7 @@ export default function Home() {
 
   return (
     <main className="bg-white max-h-screen">
+      {!roleAdmin && <Header />}
       <HeroSection />
       <Categories />
       <ProductList />
