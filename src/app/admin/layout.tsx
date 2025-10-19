@@ -72,7 +72,7 @@ const AdminLayout = async ({ children }: { children: React.ReactNode }) => {
                 height={100}
                 className="bg-transparent rounded-full w-13 h-13"
               />
-              <p>Hello Admin</p>
+              <p>Xin chào {session.user.name}</p>
             </div>
             <BtnSignOut className="text-white" />
           </div>

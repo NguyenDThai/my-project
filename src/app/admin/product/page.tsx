@@ -1,10 +1,13 @@
 "use client";
 
+import EditProductModal from "@/components/EditProductModal";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 export type Products = {
+  _id: string;
   name: string;
   price: number;
   category: string;
@@ -14,6 +17,7 @@ export type Products = {
 
 const AdminProductPage = () => {
   const [products, setProducts] = useState<Products | []>([]);
+  const [editing, setEditing] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -25,6 +29,24 @@ const AdminProductPage = () => {
 
     fetchProduct();
   }, []);
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Bạn có chắc muốn xóa sản phẩm này không?")) return;
+
+    try {
+      const res = await fetch(`/api/admin/product/${id}`, { method: "DELETE" });
+      const data = await res.json();
+
+      if (res.ok) {
+        toast.success("Xóa sản phẩm thành công");
+        setProducts((prev) => prev.filter((p) => p._id !== id));
+      } else {
+        toast.error(data.message || "Xóa sản phẩm thất bại");
+      }
+    } catch (error) {
+      console.error("Error deleting product:", error);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
@@ -94,7 +116,7 @@ const AdminProductPage = () => {
                 <div className="flex gap-2">
                   <button
                     onClick={() => {
-                      /* Handle edit */
+                      setEditing(product._id);
                     }}
                     className="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-2 px-3 rounded-lg transition-colors duration-200 font-medium text-sm flex items-center justify-center gap-1"
                   >
@@ -115,7 +137,7 @@ const AdminProductPage = () => {
                   </button>
                   <button
                     onClick={() => {
-                      /* Handle delete */
+                      handleDelete(product._id);
                     }}
                     className="flex-1 bg-red-500 hover:bg-red-600 text-white py-2 px-3 rounded-lg transition-colors duration-200 font-medium text-sm flex items-center justify-center gap-1"
                   >
@@ -139,6 +161,13 @@ const AdminProductPage = () => {
             </div>
           ))}
         </div>
+
+        {editing && (
+          <EditProductModal
+            productId={editing}
+            onClose={() => setEditing(null)}
+          />
+        )}
 
         {/* Empty State */}
         {products.length === 0 && (
