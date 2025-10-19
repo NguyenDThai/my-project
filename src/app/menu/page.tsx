@@ -188,7 +188,7 @@ const MenuPage = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="min-h-screen bg-gray-50 menu-page-background mt-[50px]"
+      className="min-h-screen bg-gray-50 menu-page-background mt-[70px]"
     >
       <div className="relative z-10">
         {/* Header */}

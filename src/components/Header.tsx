@@ -69,7 +69,11 @@ const Header = () => {
                 href={
                   item === "Trang Chủ"
                     ? "/"
-                    : `/${item.toLowerCase().replace(" ", "-")}`
+                    : item === "Giới Thiệu"
+                    ? "/about"
+                    : item === "Liên Hệ"
+                    ? "/contact"
+                    : "/menu"
                 }
                 className="relative px-2 py-1 text-gray-700 hover:text-orange-600 transition-colors duration-300 group"
               >

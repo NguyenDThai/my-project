@@ -4,6 +4,9 @@ import Categories from "@/components/Categories";
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
 import ProductList from "@/components/ProductList";
+import PromotionSection from "@/components/PromotionSection";
+import Testimonials from "@/components/Testimonials";
+import WhyChooseUs from "@/components/WhyChooseUs";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 
@@ -21,6 +24,9 @@ export default function Home() {
       <HeroSection />
       <Categories />
       <ProductList />
+      <PromotionSection />
+      <WhyChooseUs />
+      <Testimonials />
     </main>
   );
 }
