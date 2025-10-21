@@ -1,6 +1,7 @@
 "use client";
 
 import Categories from "@/components/Categories";
+import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
 import ProductList from "@/components/ProductList";
@@ -27,6 +28,7 @@ export default function Home() {
       <PromotionSection />
       <WhyChooseUs />
       <Testimonials />
+      <Footer />
     </main>
   );
 }
