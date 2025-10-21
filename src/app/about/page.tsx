@@ -101,8 +101,8 @@ const AboutPage = () => {
               </h2>
               <div className="space-y-4 text-gray-600 leading-relaxed">
                 <p>
-                  <strong>FoodExpress</strong> ra đời với sứ mệnh mang những món
-                  ăn ngon nhất đến trực tiếp căn bếp của bạn. Chúng tôi tin rằng
+                  <strong>FoodDev</strong> ra đời với sứ mệnh mang những món ăn
+                  ngon nhất đến trực tiếp căn bếp của bạn. Chúng tôi tin rằng
                   trải nghiệm ẩm thực chất lượng không cần phải đến nhà hàng.
                 </p>
                 <p>

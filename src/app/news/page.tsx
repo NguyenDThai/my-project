@@ -20,7 +20,7 @@ const NewsPage = () => {
   const newsArticles = [
     {
       id: 1,
-      title: "FoodExpress Tri Ân Khách Hàng - Giảm 50% Cho Đơn Hàng Đầu Tiên",
+      title: "FoodDev Tri Ân Khách Hàng - Giảm 50% Cho Đơn Hàng Đầu Tiên",
       excerpt:
         "Cơ hội trải nghiệm dịch vụ với ưu đãi cực sốc dành cho tân khách hàng. Áp dụng từ nay đến hết tháng...",
       image: "/news/promotion-1.jpg",
@@ -33,7 +33,7 @@ const NewsPage = () => {
       id: 2,
       title: "Top 5 Món Ăn Được Yêu Thích Nhất Tháng 12",
       excerpt:
-        "Khám phá những món ăn đang làm mưa làm gió trên thực đơn FoodExpress trong tháng vừa qua...",
+        "Khám phá những món ăn đang làm mưa làm gió trên thực đơn FoodDev trong tháng vừa qua...",
       image: "/news/top-foods.jpg",
       category: "news",
       date: "12/12/2024",
@@ -53,9 +53,9 @@ const NewsPage = () => {
     },
     {
       id: 4,
-      title: "FoodExpress Chính Thức Có Mặt Trên Ứng dụng GrabFood",
+      title: "FoodDev Chính Thức Có Mặt Trên Ứng dụng GrabFood",
       excerpt:
-        "Giờ đây bạn có thể đặt món FoodExpress dễ dàng hơn thông qua ứng dụng GrabFood với nhiều ưu đãi hấp dẫn...",
+        "Giờ đây bạn có thể đặt món FoodDev dễ dàng hơn thông qua ứng dụng GrabFood với nhiều ưu đãi hấp dẫn...",
       image: "/news/grabfood.jpg",
       category: "news",
       date: "08/12/2024",
@@ -99,7 +99,7 @@ const NewsPage = () => {
       id: 8,
       title: "Xu Hướng Ẩm Thực 2024: Healthy Fast Food Lên Ngôi",
       excerpt:
-        "Cùng FoodExpress khám phá xu hướng ẩm thực nổi bật trong năm 2024 và những món ăn healthy được yêu thích...",
+        "Cùng FoodDev khám phá xu hướng ẩm thực nổi bật trong năm 2024 và những món ăn healthy được yêu thích...",
       image: "/news/food-trend.jpg",
       category: "news",
       date: "25/11/2024",

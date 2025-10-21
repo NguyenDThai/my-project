@@ -127,7 +127,7 @@ const Footer = () => {
                   />
                 </div>
                 <span className="text-2xl font-bold bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent">
-                  FoodExpress
+                  FoodDev
                 </span>
               </Link>
 
