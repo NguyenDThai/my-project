@@ -7,7 +7,7 @@ import { authOptions } from "@/lib/authOptions";
 
 export async function PUT(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   await connectDB();
 
@@ -20,9 +20,11 @@ export async function PUT(
     );
   }
 
+  const { id } = await params;
+
   const data = await req.json();
 
-  const updateProduct = await Product.findByIdAndUpdate(params.id, data, {
+  const updateProduct = await Product.findByIdAndUpdate(id, data, {
     new: true,
   });
 
@@ -40,7 +42,7 @@ export async function PUT(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   await connectDB();
 
@@ -53,7 +55,9 @@ export async function DELETE(
     );
   }
 
-  const deleteProduct = await Product.findByIdAndDelete(params.id);
+  const { id } = await params;
+
+  const deleteProduct = await Product.findByIdAndDelete(id);
 
   if (!deleteProduct) {
     return NextResponse.json(
@@ -66,7 +70,7 @@ export async function DELETE(
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -78,9 +82,11 @@ export async function GET(
       );
     }
 
+    const { id } = await params;
+
     await connectDB();
 
-    const product = await Product.findById(params.id).lean();
+    const product = await Product.findById(id).lean();
 
     if (!product) {
       return NextResponse.json(
