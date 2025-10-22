@@ -236,12 +236,12 @@ const Footer = () => {
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
-              className="flex items-center gap-4"
+              className="flex items-center flex-wrap gap-4"
             >
               <span className="text-gray-400 text-sm">
                 Chấp nhận thanh toán:
               </span>
-              <div className="flex gap-2">
+              <div className="flex gap-2 flex-wrap">
                 {paymentMethods.map((method, index) => (
                   <motion.div
                     key={method.name}
