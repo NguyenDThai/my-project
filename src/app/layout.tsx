@@ -6,6 +6,7 @@ import Providers from "@/app/providers";
 import Header from "@/components/Header";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
+import CartProvider from "@/context/CartItem";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,7 +39,7 @@ export default async function RootLayout({
       >
         <Providers>
           {!adminRole && <Header />}
-          {children}
+          <CartProvider>{children}</CartProvider>
         </Providers>
         <ToastContainer position="top-center" />
       </body>

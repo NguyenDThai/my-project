@@ -13,6 +13,7 @@ export type Products = {
   category: string;
   description?: string;
   image: string;
+  quantity: number;
 }[];
 
 const AdminProductPage = () => {

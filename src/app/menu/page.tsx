@@ -6,6 +6,7 @@ import { Products } from "@/app/admin/product/page";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import ShoppingButton from "@/components/ShoppingButton";
+import { useCart } from "@/context/CartItem";
 
 // Animation variants
 const containerVariants: any = {
@@ -108,6 +109,7 @@ const MenuPage = () => {
   const [filtersProducts, setFilterProducts] = useState<Products | []>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [loading, setLoading] = useState(false);
+  const { addToCart } = useCart();
 
   //   Danh sach cac laoi san pham
 
@@ -407,9 +409,7 @@ const MenuPage = () => {
                             initial="rest"
                             whileHover="hover"
                             whileTap="tap"
-                            onClick={() => {
-                              console.log("Da click");
-                            }}
+                            onClick={() => addToCart(product)}
                             className="bg-orange-500 text-white py-2 px-4 rounded-lg font-medium text-sm flex items-center gap-1"
                           >
                             <motion.svg

@@ -39,6 +39,25 @@ ul {
   min-height: 80vh; /* Content luôn chiếm ít nhất 80% viewport */
 }
 
+/* Custom scrollbar cho đẹp */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #ffc120;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #ffb300;
+}
+
 @media (max-width: 1023px) {
   .menu-page-background::before {
     display: none;
