@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import { Products } from "@/app/admin/product/page";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
+import ShoppingButton from "@/components/ShoppingButton";
 
 // Animation variants
 const containerVariants: any = {
@@ -448,6 +449,9 @@ const MenuPage = () => {
           }
         `}</style>
       </div>
+
+      {/* Cart shopping */}
+      <ShoppingButton />
     </motion.div>
   );
 };
