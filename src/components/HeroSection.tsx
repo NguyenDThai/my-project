@@ -5,7 +5,7 @@ import Link from "next/link";
 
 const HeroSection = () => {
   return (
-    <section className="relative h-screen w-full text-white overflow-hidden">
+    <section className="relative h-screen w-full md:mt-[80px] text-white overflow-hidden">
       {/* Video Background */}
       <div className="absolute inset-0 w-full h-full">
         <video
