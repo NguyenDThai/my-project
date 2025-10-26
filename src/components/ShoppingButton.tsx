@@ -8,7 +8,16 @@ import { RiArrowDropDownLine, RiArrowDropUpLine } from "react-icons/ri";
 import { GoPencil } from "react-icons/go";
 
 const ShoppingButton = () => {
-  const { total, cart, handleDeleteItem } = useCart();
+  const {
+    total,
+    cart,
+    handleDeleteItem,
+    allUtensilsSelected,
+    handleToggleAllUtensils,
+    handleToggleUtensil,
+    handleIncreaseQuantity,
+    handleDecreaseQuantity,
+  } = useCart();
   const [cartDetail, setCartDetail] = useState(false);
 
   return (
@@ -110,14 +119,73 @@ const ShoppingButton = () => {
                               </div>
                             </div>
 
-                            {/* Option dụng cụ ăn uống */}
-                            <div className="flex items-center gap-2 mb-3">
-                              <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-gray-400 rounded flex items-center justify-center flex-shrink-0">
-                                <div className="w-2 h-2 sm:w-3 sm:h-3 bg-green-500 rounded-sm"></div>
+                            {/* Nút tăng/giảm số lượng */}
+                            <div className="flex flex-col gap-3 mb-3">
+                              <div className="flex items-center border border-gray-300 rounded-lg max-w-[100px]">
+                                <button
+                                  onClick={() =>
+                                    handleDecreaseQuantity(item._id)
+                                  }
+                                  className="w-8 h-8 flex items-center justify-center text-gray-600 hover:bg-gray-100 rounded-l-lg transition-colors"
+                                  disabled={item.quantity <= 1}
+                                >
+                                  <span
+                                    className={`text-lg font-bold ${
+                                      item.quantity <= 1
+                                        ? "text-gray-400"
+                                        : "text-gray-700"
+                                    }`}
+                                  >
+                                    -
+                                  </span>
+                                </button>
+                                <span className="w-8 text-center font-semibold text-gray-900">
+                                  {item.quantity}
+                                </span>
+                                <button
+                                  onClick={() =>
+                                    handleIncreaseQuantity(item._id)
+                                  }
+                                  className="w-8 h-8 flex items-center justify-center text-gray-600 hover:bg-gray-100 rounded-r-lg transition-colors"
+                                >
+                                  <span className="text-lg font-bold text-gray-700">
+                                    +
+                                  </span>
+                                </button>
                               </div>
-                              <span className="text-sm sm:text-lg text-gray-700">
-                                Lấy dụng cụ ăn uống nhựa
-                              </span>
+
+                              {/* Option dụng cụ ăn uống - Có thể tick chọn */}
+                              <div
+                                className="flex items-center gap-2 cursor-pointer"
+                                onClick={() => handleToggleUtensil(item._id)}
+                              >
+                                <div
+                                  className={`w-4 h-4 sm:w-5 sm:h-5 border-2 rounded flex items-center justify-center flex-shrink-0 transition-colors ${
+                                    item.needUtensils
+                                      ? "border-orange-500 bg-orange-500"
+                                      : "border-gray-400 bg-white"
+                                  }`}
+                                >
+                                  {item.needUtensils && (
+                                    <svg
+                                      className="w-2 h-2 sm:w-3 sm:h-3 text-white"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={3}
+                                        d="M5 13l4 4L19 7"
+                                      />
+                                    </svg>
+                                  )}
+                                </div>
+                                <span className="text-sm sm:text-lg text-gray-700">
+                                  Lấy dụng cụ ăn uống nhựa
+                                </span>
+                              </div>
                             </div>
 
                             <p className="text-xs sm:text-sm text-gray-600 hidden sm:block">
@@ -172,12 +240,35 @@ const ShoppingButton = () => {
                   ))}
                 </div>
 
-                {/* Thêm dụng cụ ăn uống */}
-                <div className="mt-3 sm:mt-4 bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 border-2 border-gray-200">
+                {/* Thêm dụng cụ ăn uống cho toàn bộ đơn hàng */}
+                <div
+                  className="mt-3 sm:mt-4 bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 border-2 border-gray-200 cursor-pointer hover:bg-gray-50 transition-colors"
+                  onClick={handleToggleAllUtensils}
+                >
                   <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0">
                     <div className="flex items-center gap-2 sm:gap-3">
-                      <div className="w-4 h-4 sm:w-6 sm:h-6 border-2 border-gray-400 rounded flex items-center justify-center flex-shrink-0">
-                        <div className="w-2 h-2 sm:w-4 sm:h-4 bg-green-500 rounded-sm"></div>
+                      <div
+                        className={`w-4 h-4 sm:w-6 sm:h-6 border-2 rounded flex items-center justify-center flex-shrink-0 transition-colors ${
+                          allUtensilsSelected
+                            ? "border-orange-500 bg-orange-500"
+                            : "border-gray-400 bg-white"
+                        }`}
+                      >
+                        {allUtensilsSelected && (
+                          <svg
+                            className="w-2 h-2 sm:w-4 sm:h-4 text-white"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={3}
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                        )}
                       </div>
                       <div>
                         <span className="text-sm sm:text-lg font-medium text-gray-900 block">

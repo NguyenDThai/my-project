@@ -16,14 +16,20 @@ type CartItem = {
   price: number;
   quantity: number;
   image?: string;
+  needUtensils?: boolean; // Thêm trường mới
 };
 
 type CartContextType = {
   cart: CartItem[];
   total: number;
   totalPrice: number;
+  allUtensilsSelected: boolean;
   addToCart: (item: CartItem) => void;
   handleDeleteItem: (itemId: string) => void;
+  handleToggleUtensil: (itemId: string) => void;
+  handleToggleAllUtensils: () => void;
+  handleIncreaseQuantity: (itemId: string) => void;
+  handleDecreaseQuantity: (itemId: string) => void;
 };
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -33,6 +39,7 @@ const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const [cart, setCart] = useState<CartItem[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
+  const [allUtensilsSelected, setAllUtensilsSelected] = useState(false);
 
   //   Load cart tu local storege
 
@@ -60,6 +67,46 @@ const CartProvider = ({ children }: { children: ReactNode }) => {
     );
     setTotalPrice(newTotal);
   }, [cart, session]);
+
+  // Ham toggle dung cu cho tung san pham
+  const handleToggleUtensil = (itemId: string) => {
+    setCart((prev) =>
+      prev.map((item) =>
+        item._id === itemId
+          ? { ...item, needUtensils: !item.needUtensils }
+          : item
+      )
+    );
+  };
+
+  // Hàm toggle dụng cụ cho tất cả sản phẩm
+  const handleToggleAllUtensils = () => {
+    const newValue = !allUtensilsSelected;
+    setAllUtensilsSelected(newValue);
+    setCart((prev) =>
+      prev.map((item) => ({ ...item, needUtensils: newValue }))
+    );
+  };
+
+  // Ham them so luong san pham
+  const handleIncreaseQuantity = (itemId: string) => {
+    setCart((prev) =>
+      prev.map((item) =>
+        item._id === itemId ? { ...item, quantity: item.quantity + 1 } : item
+      )
+    );
+  };
+
+  // Hàm giảm số lượng
+  const handleDecreaseQuantity = (itemId: string) => {
+    setCart((prev) =>
+      prev.map((item) =>
+        item._id === itemId && item.quantity > 1
+          ? { ...item, quantity: item.quantity - 1 }
+          : item
+      )
+    );
+  };
 
   const addToCart = (item: CartItem) => {
     if (!session) {
@@ -103,7 +150,18 @@ const CartProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <CartContext.Provider
-      value={{ cart, total, addToCart, handleDeleteItem, totalPrice }}
+      value={{
+        cart,
+        total,
+        addToCart,
+        handleDeleteItem,
+        totalPrice,
+        allUtensilsSelected,
+        handleToggleUtensil,
+        handleToggleAllUtensils,
+        handleIncreaseQuantity,
+        handleDecreaseQuantity,
+      }}
     >
       {children}
     </CartContext.Provider>
