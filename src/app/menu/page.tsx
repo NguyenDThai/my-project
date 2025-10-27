@@ -7,6 +7,7 @@ import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import ShoppingButton from "@/components/ShoppingButton";
 import { useCart } from "@/context/CartItem";
+import EditProductInShopping from "@/components/EditProductInShopping";
 
 // Animation variants
 const containerVariants: any = {
@@ -191,7 +192,7 @@ const MenuPage = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="min-h-screen bg-gray-50 menu-page-background mt-[70px]"
+      className="min-h-screen bg-gray-50 menu-page-background mt-[70px] "
     >
       <div className="relative z-10">
         {/* Header */}
@@ -452,6 +453,7 @@ const MenuPage = () => {
 
       {/* Cart shopping */}
       <ShoppingButton />
+      <EditProductInShopping />
     </motion.div>
   );
 };

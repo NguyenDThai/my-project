@@ -24,12 +24,18 @@ type CartContextType = {
   total: number;
   totalPrice: number;
   allUtensilsSelected: boolean;
+  isEditModalOpen: boolean;
+  editingProduct: CartItem | null;
+  setEditingProduct: (product: CartItem | null) => void;
   addToCart: (item: CartItem) => void;
   handleDeleteItem: (itemId: string) => void;
   handleToggleUtensil: (itemId: string) => void;
   handleToggleAllUtensils: () => void;
+  handleCloseEditModal: () => void;
   handleIncreaseQuantity: (itemId: string) => void;
   handleDecreaseQuantity: (itemId: string) => void;
+  handleOpenEditModal: (product: CartItem) => void;
+  handleUpdateProduct: (updateProduct: CartItem) => void;
 };
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -40,6 +46,8 @@ const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [allUtensilsSelected, setAllUtensilsSelected] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<CartItem | null>(null);
 
   //   Load cart tu local storege
 
@@ -67,6 +75,27 @@ const CartProvider = ({ children }: { children: ReactNode }) => {
     );
     setTotalPrice(newTotal);
   }, [cart, session]);
+
+  // Ham mo modal chinh sua san pham
+  const handleOpenEditModal = (product: CartItem) => {
+    setEditingProduct(product);
+    setIsEditModalOpen(true);
+  };
+
+  // Ham dong modal chinh sua san pham
+  const handleCloseEditModal = () => {
+    setIsEditModalOpen(false);
+    setEditingProduct(null);
+  };
+
+  // Ham cap nhat san pham
+  const handleUpdateProduct = (updateProduct: CartItem) => {
+    setCart((prev) =>
+      prev.map((item) =>
+        item._id === updateProduct._id ? updateProduct : item
+      )
+    );
+  };
 
   // Ham toggle dung cu cho tung san pham
   const handleToggleUtensil = (itemId: string) => {
@@ -157,10 +186,16 @@ const CartProvider = ({ children }: { children: ReactNode }) => {
         handleDeleteItem,
         totalPrice,
         allUtensilsSelected,
+        isEditModalOpen,
+        editingProduct,
+        setEditingProduct,
         handleToggleUtensil,
         handleToggleAllUtensils,
         handleIncreaseQuantity,
         handleDecreaseQuantity,
+        handleOpenEditModal,
+        handleCloseEditModal,
+        handleUpdateProduct,
       }}
     >
       {children}

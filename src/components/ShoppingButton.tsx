@@ -17,6 +17,7 @@ const ShoppingButton = () => {
     handleToggleUtensil,
     handleIncreaseQuantity,
     handleDecreaseQuantity,
+    handleOpenEditModal,
   } = useCart();
   const [cartDetail, setCartDetail] = useState(false);
 
@@ -222,7 +223,13 @@ const ShoppingButton = () => {
                           {/* Action buttons */}
                           <div className="flex items-center gap-2">
                             {/* Nút chỉnh sửa */}
-                            <button className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-red-500 text-white flex items-center justify-center cursor-pointer hover:bg-red-600 transition-colors duration-200 shadow-sm">
+                            <button
+                              onClick={() => {
+                                handleOpenEditModal(item);
+                                setCartDetail(false);
+                              }}
+                              className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-red-500 text-white flex items-center justify-center cursor-pointer hover:bg-red-600 transition-colors duration-200 shadow-sm"
+                            >
                               <GoPencil size={14} className="sm:w-4 sm:h-4" />
                             </button>
 
