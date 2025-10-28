@@ -72,7 +72,7 @@ const AllUserPage = () => {
 
       {/* Table */}
       <div className="overflow-hidden rounded-2xl border border-gray-200 shadow-sm">
-        <table className="w-full">
+        <table className="w-full ">
           <thead className="bg-gradient-to-r from-orange-500 to-orange-600">
             <tr>
               <th className="px-6 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">
@@ -98,7 +98,7 @@ const AllUserPage = () => {
               <th className="px-6 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">
                 Email
               </th>
-              <th className="px-6 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">
+              <th className="px-6 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider w-64">
                 Địa chỉ
               </th>
               <th className="px-6 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">
@@ -139,7 +139,7 @@ const AllUserPage = () => {
                   </div>
                 </td>
                 <td className="px-6 py-4">
-                  <div className="text-sm text-gray-600 max-w-xs truncate">
+                  <div className="text-sm text-gray-600 max-w-xs line-clamp-2 hover:line-clamp-none transition-all cursor-help">
                     {user.address || "Chưa cập nhật"}
                   </div>
                 </td>
