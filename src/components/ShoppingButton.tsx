@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import { FaShoppingCart, FaTrashAlt } from "react-icons/fa";
 import { RiArrowDropDownLine, RiArrowDropUpLine } from "react-icons/ri";
 import { GoPencil } from "react-icons/go";
+import Link from "next/link";
 
 const ShoppingButton = () => {
   const {
@@ -307,9 +308,11 @@ const ShoppingButton = () => {
                   {total.toLocaleString()} đ
                 </span>
               </div>
-              <button className="w-full bg-[#ffc120] text-gray-900 font-bold text-lg sm:text-xl lg:text-2xl py-3 sm:py-4 px-6 sm:px-8 rounded-xl sm:rounded-2xl hover:bg-[#ffb300] transition-all duration-300 border-2 border-yellow-400 shadow-lg">
-                THANH TOÁN
-              </button>
+              <Link href="/checkout">
+                <button className="w-full bg-[#ffc120] text-gray-900 font-bold text-lg sm:text-xl lg:text-2xl py-3 sm:py-4 px-6 sm:px-8 rounded-xl sm:rounded-2xl hover:bg-[#ffb300] transition-all duration-300 border-2 border-yellow-400 shadow-lg">
+                  THANH TOÁN
+                </button>
+              </Link>
             </div>
           )}
         </div>
