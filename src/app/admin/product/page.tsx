@@ -1,6 +1,6 @@
 "use client";
 
-import EditProductModal from "@/components/EditProductModal";
+import EditProductModal from "@/app/admin/_components/EditProductModal";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
