@@ -3,10 +3,11 @@
 import StepOrderOne from "@/components/StepOrderOne";
 import StepOrderTwo from "@/components/StepOrderTwo";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const CheckoutPage = () => {
   const [currentStep, setCurrentStep] = useState(1);
+  const [user, setUser] = useState({});
 
   const steps = [
     {
@@ -26,9 +27,19 @@ const CheckoutPage = () => {
     },
   ];
 
+  useEffect(() => {
+    const fetchUser = async () => {
+      const res = await fetch("/api/user/profile");
+      const data = await res.json();
+      setUser(data.user);
+    };
+
+    fetchUser();
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-50 py-8 mt-20">
-      <div className="max-w-4xl mx-auto px-4">
+      <div className="max-w-5xl mx-auto px-4">
         <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
           <div className="flex items-center justify-between relative">
             {/* Progress Line */}
@@ -82,7 +93,7 @@ const CheckoutPage = () => {
           {currentStep === 1 && (
             <StepOrderOne setCurrentStep={setCurrentStep} />
           )}
-          {currentStep === 2 && <StepOrderTwo />}
+          {currentStep === 2 && <StepOrderTwo user={user} />}
 
           {currentStep === 3 && (
             <div>
