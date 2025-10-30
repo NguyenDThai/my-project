@@ -26,7 +26,6 @@ const StepOrderTwo = ({ user }: any) => {
     name: "",
     phone: "",
     address: "",
-    note: "",
   });
   const { data: session } = useSession();
 
@@ -37,7 +36,6 @@ const StepOrderTwo = ({ user }: any) => {
         name: user?.name || "",
         phone: user?.phone || "",
         address: user?.address || "",
-        note: "",
       });
     }
   }, [user]);
@@ -162,19 +160,6 @@ const StepOrderTwo = ({ user }: any) => {
                 className={`w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition-colors ${
                   !isEditing ? "bg-gray-100 cursor-not-allowed" : "bg-white"
                 }`}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Ghi chú (cho tài xế)
-              </label>
-              <textarea
-                name="note"
-                value={formData.note}
-                onChange={handleChangeInput}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none"
-                rows={3}
-                placeholder="Ví dụ: Giao hàng giờ hành chính, gọi điện trước khi giao..."
               />
             </div>
           </div>
