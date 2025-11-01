@@ -99,7 +99,7 @@ const Header = () => {
         {/* User Section */}
         <div className="flex items-center gap-3 sm:gap-4">
           {/* Cart Icon - Always Visible */}
-          <motion.button
+          {/* <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
             className="relative p-2 text-gray-600 hover:text-orange-600 transition-colors duration-200"
@@ -120,7 +120,7 @@ const Header = () => {
             <span className="absolute -top-1 -right-1 bg-orange-600 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-bold">
               0
             </span>
-          </motion.button>
+          </motion.button> */}
 
           {status === "loading" ? (
             <div className="hidden sm:flex items-center gap-3">

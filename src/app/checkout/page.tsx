@@ -4,8 +4,10 @@
 import StepOrderOne from "@/components/StepOrderOne";
 import StepOrderTwo from "@/components/StepOrderTwo";
 import { useSession } from "next-auth/react";
-
 import React, { useEffect, useRef, useState } from "react";
+import { FaUserAlt } from "react-icons/fa";
+import { MdOutlineProductionQuantityLimits } from "react-icons/md";
+import { SiTicktick } from "react-icons/si";
 
 const CheckoutPage = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -17,17 +19,17 @@ const CheckoutPage = () => {
     {
       number: 1,
       title: "THÔNG TIN KHÁCH HÀNG",
-      icon: "👤",
+      icon: <FaUserAlt />,
     },
     {
       number: 2,
       title: "THÔNG TIN ĐƠN HÀNG",
-      icon: "📦",
+      icon: <MdOutlineProductionQuantityLimits />,
     },
     {
       number: 3,
       title: "HOÀN TẤT THANH TOÁN",
-      icon: "✅",
+      icon: <SiTicktick />,
     },
   ];
 
