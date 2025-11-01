@@ -2,12 +2,14 @@
 
 import StepOrderOne from "@/components/StepOrderOne";
 import StepOrderTwo from "@/components/StepOrderTwo";
+import { useSession } from "next-auth/react";
 
 import React, { useEffect, useState } from "react";
 
 const CheckoutPage = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [user, setUser] = useState({});
+  const { data: session } = useSession();
 
   const steps = [
     {
@@ -36,6 +38,12 @@ const CheckoutPage = () => {
 
     fetchUser();
   }, []);
+
+  const handleNextStep = () => {
+    if (session) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 mt-20">
@@ -128,8 +136,12 @@ const CheckoutPage = () => {
 
             {currentStep < steps.length && (
               <button
-                onClick={() => setCurrentStep(currentStep + 1)}
-                className="ml-auto px-8 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors font-medium"
+                onClick={handleNextStep}
+                className={`${
+                  session
+                    ? "ml-auto px-8 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors font-medium cursor-pointer"
+                    : "ml-auto px-8 py-3 bg-orange-300 text-white rounded-lg transition-colors font-medium cursor-not-allowed"
+                }`}
               >
                 Tiếp tục →
               </button>

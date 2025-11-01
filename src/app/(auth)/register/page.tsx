@@ -12,6 +12,8 @@ const RegisterPage = () => {
     confirmPassword: "",
   });
 
+  const [loading, setLoading] = useState(false);
+
   const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -20,25 +22,32 @@ const RegisterPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
 
-    const res = await fetch("/api/auth/register", {
-      method: "POST",
-      headers: { "Content-type": "application/json" },
-      body: JSON.stringify(data),
-    });
-    const result = await res.json();
+    try {
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      const result = await res.json();
 
-    if (res.ok) {
-      toast.success(result.message);
-      setData({ name: "", email: "", password: "", confirmPassword: "" });
-      router.push("/login");
-    } else if (res.status === 400) {
-      toast.error(result.message);
+      if (res.ok) {
+        toast.success(result.message);
+        setData({ name: "", email: "", password: "", confirmPassword: "" });
+        router.push("/login");
+      } else if (res.status === 400) {
+        toast.error(result.message);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-50 to-orange-100">
       <form
         onSubmit={handleSubmit}
         className="bg-white p-8 rounded-2xl shadow-xl w-96 space-y-6 border border-gray-100"
@@ -63,7 +72,7 @@ const RegisterPage = () => {
               value={data.name}
               onChange={handleChange}
               placeholder="Nhập họ và tên của bạn"
-              className="w-full outline-none px-4 py-3 border border-gray-300 text-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+              className="w-full outline-none px-4 py-3 border border-gray-300 text-black rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orgring-orange-500 transition-all duration-200"
               required
             />
           </div>
@@ -82,7 +91,7 @@ const RegisterPage = () => {
               placeholder="Nhập email của bạn"
               value={data.email}
               onChange={handleChange}
-              className="w-full outline-none px-4 py-3 border border-gray-300 text-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+              className="w-full outline-none px-4 py-3 border border-gray-300 text-black rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orring-orange-500 transition-all duration-200"
               required
             />
           </div>
@@ -101,7 +110,7 @@ const RegisterPage = () => {
               placeholder="Nhập mật khẩu của bạn"
               value={data.password}
               onChange={handleChange}
-              className="w-full outline-none px-4 py-3 border border-gray-300 text-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+              className="w-full outline-none px-4 py-3 border border-gray-300 text-black rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orring-orange-500 transition-all duration-200"
               required
             />
           </div>
@@ -119,7 +128,7 @@ const RegisterPage = () => {
               placeholder="Nhập lại mật khẩu của bạn"
               value={data.confirmPassword}
               onChange={handleChange}
-              className="w-full outline-none px-4 py-3 border border-gray-300 text-black rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+              className="w-full outline-none px-4 py-3 border border-gray-300 text-black rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orring-orange-500 transition-all duration-200"
               required
             />
           </div>
@@ -127,9 +136,21 @@ const RegisterPage = () => {
 
         <button
           type="submit"
-          className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-lg font-medium hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-md hover:shadow-lg"
+          disabled={loading}
+          className={`w-full bg-gradient-to-r bg-orange-600 text-white py-3 rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg ${
+            loading
+              ? "opacity-70 cursor-not-allowed"
+              : "hover:bg-white hover:border hover:border-orange-500 hover:text-orange-500 cursor-pointer"
+          }`}
         >
-          Đăng Ký
+          {loading ? (
+            <div className="flex items-center justify-center">
+              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+              Đang tải vui lòng đợi...
+            </div>
+          ) : (
+            "Đăng Ký"
+          )}
         </button>
 
         <div className="text-center pt-4 border-t border-gray-100">
@@ -137,7 +158,7 @@ const RegisterPage = () => {
             Đã có tài khoản?{" "}
             <a
               href="/login"
-              className="text-blue-600 hover:text-blue-800 font-medium transition-colors duration-200"
+              className="text-orange-600 hover:text-orange-800 font-medium transition-colors duration-200"
             >
               Đăng nhập
             </a>
