@@ -1,15 +1,17 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import StepOrderOne from "@/components/StepOrderOne";
 import StepOrderTwo from "@/components/StepOrderTwo";
 import { useSession } from "next-auth/react";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const CheckoutPage = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [user, setUser] = useState({});
   const { data: session } = useSession();
+  const stepTwoRef = useRef<any>(null);
 
   const steps = [
     {
@@ -29,6 +31,7 @@ const CheckoutPage = () => {
     },
   ];
 
+  // Lấy thông tin user lên đơn hàng
   useEffect(() => {
     const fetchUser = async () => {
       const res = await fetch("/api/user/profile");
@@ -39,8 +42,11 @@ const CheckoutPage = () => {
     fetchUser();
   }, []);
 
-  const handleNextStep = () => {
-    if (session) {
+  const handleNextStep = async () => {
+    if (currentStep === 2 && stepTwoRef.current) {
+      const success = await stepTwoRef.current.createOrder();
+      if (success) setCurrentStep(3);
+    } else {
       setCurrentStep(currentStep + 1);
     }
   };
@@ -101,7 +107,13 @@ const CheckoutPage = () => {
           {currentStep === 1 && (
             <StepOrderOne setCurrentStep={setCurrentStep} />
           )}
-          {currentStep === 2 && <StepOrderTwo user={user} />}
+          {currentStep === 2 && (
+            <StepOrderTwo
+              ref={stepTwoRef}
+              user={user}
+              onSuccessOrder={() => setCurrentStep(3)}
+            />
+          )}
 
           {currentStep === 3 && (
             <div>

@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
@@ -5,7 +6,12 @@ import { useCart } from "@/context/CartItem";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, {
+  useEffect,
+  useState,
+  useImperativeHandle,
+  forwardRef,
+} from "react";
 import { FaPen } from "react-icons/fa";
 import { toast } from "react-toastify";
 
@@ -16,7 +22,7 @@ type User = {
   note?: string;
 };
 
-const StepOrderTwo = ({ user }: any) => {
+const StepOrderTwo = forwardRef(({ user, onSuccessOrder }: any, ref) => {
   const { cart, total } = useCart();
   const [shippingFee, setShippingFee] = useState(15000);
   const [isEditing, setIsEditing] = useState(false);
@@ -103,6 +109,62 @@ const StepOrderTwo = ({ user }: any) => {
     });
     setIsEditing(false);
   };
+
+  // lấy dữ liệu cho phương thức vận chuyển
+  const handleSelectMethod = (method: string) => {
+    setSeletedMethod(method);
+    setFormData((prev) => ({
+      ...prev,
+      deliveryMethod: method,
+    }));
+  };
+
+  // Hàm xử lý api cho đơn hàng
+  const handleCreateOrder = async () => {
+    if (!formData.name || !formData.address || !formData.phone) {
+      toast.error("Vui lòng nhập đầy đủ thông tin giao hàng");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const res = await fetch("/api/order", {
+        method: "POST",
+        body: JSON.stringify({
+          name: formData.name,
+          address: formData.address,
+          phone: formData.phone,
+          note: formData.note,
+          cart,
+          total,
+          shippingFee,
+          deliveryMethod: selectedMethod,
+        }),
+        headers: {
+          "Content-type": "application/json",
+        },
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        toast.success("Đặt hàng thành công");
+        onSuccessOrder();
+      } else {
+        toast.error(data.message || "Không thể tạo đơn hàng");
+      }
+    } catch (error) {
+      console.error("Lỗi khi tạo đơn hàng:", error);
+      toast.error("Đã xảy ra lỗi, vui lòng thử lại");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useImperativeHandle(ref, () => ({
+    createOrder: handleCreateOrder,
+  }));
 
   return (
     <div className="flex flex-col">
@@ -213,7 +275,7 @@ const StepOrderTwo = ({ user }: any) => {
               {/* Phương thức 1: Giao hàng tận nơi */}
               <div
                 className="flex items-center space-x-3 p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50"
-                onClick={() => setSeletedMethod("delivery")}
+                onClick={() => handleSelectMethod("delivery")}
               >
                 <div className="flex items-center justify-center w-5 h-5 border border-gray-300 rounded-full">
                   {selectedMethod === "delivery" && (
@@ -228,7 +290,7 @@ const StepOrderTwo = ({ user }: any) => {
               {/* Phương thức 2: Hẹn lấy tại cửa hàng */}
               <div
                 className="flex items-start space-x-3 p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50"
-                onClick={() => setSeletedMethod("pickup")}
+                onClick={() => handleSelectMethod("pickup")}
               >
                 <div className="flex items-center justify-center w-5 h-5 border border-gray-300 rounded-full mt-1">
                   {selectedMethod === "pickup" && (
@@ -273,6 +335,9 @@ const StepOrderTwo = ({ user }: any) => {
             <div className="mt-6">
               <div className="text-sm font-medium mb-2">GHI CHÚ ĐƠN HÀNG</div>
               <textarea
+                name="note"
+                value={formData.note || ""}
+                onChange={handleChangeInput}
                 placeholder="Ghi chú"
                 className="w-full p-3 border border-gray-300 rounded-md resize-none"
                 rows={3}
@@ -347,6 +412,6 @@ const StepOrderTwo = ({ user }: any) => {
       </div>
     </div>
   );
-};
+});
 
 export default StepOrderTwo;
