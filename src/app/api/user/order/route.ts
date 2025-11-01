@@ -17,7 +17,9 @@ export async function GET() {
 
     await connectDB();
 
-    const orderUser = await Orders.findOne({ userId: session.user.id });
+    const orderUser = await Orders.find({ userId: session.user.id }).sort({
+      createdAt: -1,
+    });
 
     if (!orderUser) {
       return NextResponse.json(

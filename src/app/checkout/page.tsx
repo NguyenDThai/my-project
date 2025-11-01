@@ -4,6 +4,7 @@
 import StepOrderOne from "@/components/StepOrderOne";
 import StepOrderTwo from "@/components/StepOrderTwo";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import { FaUserAlt } from "react-icons/fa";
 import { MdOutlineProductionQuantityLimits } from "react-icons/md";
@@ -139,7 +140,7 @@ const CheckoutPage = () => {
 
           {/* Navigation Buttons */}
           <div className="flex justify-between mt-8 pt-6 border-t border-gray-200">
-            {currentStep > 1 && (
+            {currentStep > 1 && currentStep !== steps.length && (
               <button
                 onClick={() => setCurrentStep(currentStep - 1)}
                 className="px-8 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
@@ -162,9 +163,11 @@ const CheckoutPage = () => {
             )}
 
             {currentStep === steps.length && (
-              <button className="ml-auto px-8 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors font-medium">
-                Hoàn tất đơn hàng
-              </button>
+              <Link href="/">
+                <button className="ml-auto px-8 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors font-medium">
+                  Hoàn tất đơn hàng
+                </button>
+              </Link>
             )}
           </div>
         </div>

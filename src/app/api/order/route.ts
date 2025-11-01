@@ -52,6 +52,7 @@ export async function POST(req: Request) {
         image: item.image,
         price: item.price,
         quantity: item.quantity,
+        category: item.category,
       })),
       totalPrice: total,
       shippingFee: shippingFee || 15000,

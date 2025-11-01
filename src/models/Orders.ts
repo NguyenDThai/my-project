@@ -9,7 +9,7 @@ export interface IOrder extends Document {
   items: {
     productId: string;
     name: string;
-    category: string;
+    category?: string;
     image: string;
     price: number;
     quantity: number;
@@ -33,6 +33,7 @@ const OrderSchema = new Schema<IOrder>(
       {
         productId: { type: String, required: true },
         name: { type: String, required: true },
+        category: { type: String },
         image: { type: String },
         price: { type: Number, required: true },
         quantity: { type: Number, required: true },

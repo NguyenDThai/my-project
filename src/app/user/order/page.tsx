@@ -3,7 +3,6 @@
 
 import RenderOrderUsers from "@/components/RenderOrderUsers";
 import { IOrder } from "@/models/Orders";
-import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
 export interface OrderUserType extends IOrder {
@@ -11,34 +10,53 @@ export interface OrderUserType extends IOrder {
 }
 
 const OrderPage = () => {
-  const [orderUser, setOrderUser] = useState<OrderUserType>(
-    {} as OrderUserType
-  );
+  const [orderUser, setOrderUser] = useState<OrderUserType | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    try {
-      const fetchOrderUser = async () => {
+    const fetchOrderUser = async () => {
+      try {
         const res = await fetch("/api/user/order");
         const data = await res.json();
 
         if (!res.ok) {
           throw new Error(data.message || "Lỗi khi lấy đơn hàng");
         }
+
         setOrderUser(data.orderUser);
-      };
-      fetchOrderUser();
-    } catch (error: any) {
-      console.error(error.message);
-    } finally {
-      setLoading(false);
-    }
+      } catch (error: any) {
+        console.error("Lỗi khi fetch đơn hàng:", error.message);
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrderUser();
   }, []);
 
-  if (loading)
-    return <div className="mt-20 text-center">Đang tải đơn hàng</div>;
+  if (loading) {
+    return <div className="mt-20 text-center">Đang tải đơn hàng...</div>;
+  }
 
-  return <RenderOrderUsers orderUser={orderUser} />;
+  if (error) {
+    return <div className="mt-20 text-center text-red-500">{error}</div>;
+  }
+
+  if (!orderUser) {
+    return (
+      <div className="mt-20 text-center">
+        Không có đơn hàng nào để hiển thị.
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-20">
+      <RenderOrderUsers orderUser={orderUser} />
+    </div>
+  );
 };
 
 export default OrderPage;
