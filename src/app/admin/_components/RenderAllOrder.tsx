@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import BtnUpdateStatus from "@/app/admin/_components/BtnUpdateStatus";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
 const RenderAllOrder = () => {
-  const [orders, setOrders] = useState([]);
+  const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -311,9 +312,20 @@ const RenderAllOrder = () => {
                     <button className="px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors duration-200">
                       Xem chi tiết
                     </button>
-                    <button className="px-4 py-2 text-sm font-medium text-green-600 bg-green-50 rounded-lg hover:bg-green-100 transition-colors duration-200">
-                      Cập nhật TT
-                    </button>
+                    <BtnUpdateStatus
+                      order={order}
+                      orderId={order._id}
+                      currentStatus={order.status}
+                      onStatusUpdated={(newStatus) => {
+                        setOrders((prev) =>
+                          prev.map((o: any) =>
+                            o._id === order._id
+                              ? { ...o, status: newStatus }
+                              : o
+                          )
+                        );
+                      }}
+                    />
                   </div>
                 </div>
               </div>

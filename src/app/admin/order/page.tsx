@@ -3,9 +3,9 @@ import React from "react";
 
 const AdminOrderPage = () => {
   return (
-    <div>
+    <>
       <RenderAllOrder />
-    </div>
+    </>
   );
 };
 
