@@ -11,6 +11,7 @@ const RenderAllOrder = () => {
   const [loading, setLoading] = useState(false);
   const [value, setValue] = useState("");
   const [filteredOrder, setFilteredOrder] = useState<any[]>([]);
+  const [filterStatus, setFilterStatus] = useState("");
 
   useEffect(() => {
     try {
@@ -63,19 +64,23 @@ const RenderAllOrder = () => {
   // Handle filter order
   const handleSearch = () => {
     const keyword = value.toLowerCase().trim();
-
-    if (!keyword) {
-      setFilteredOrder(orders);
-      return;
-    }
-    const result = orders.filter(
-      (order) =>
+    const result = orders.filter((order) => {
+      const matchKeyWord =
         order.name.toLowerCase().includes(keyword) ||
-        order.phone.toString().includes(keyword)
-    );
+        order.phone.toString().includes(keyword);
+
+      const matchStatus = filterStatus === "" || order.status === filterStatus;
+
+      return matchKeyWord && matchStatus;
+    });
 
     setFilteredOrder(result);
   };
+
+  useEffect(() => {
+    handleSearch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterStatus]);
 
   if (loading) {
     return (
@@ -98,11 +103,11 @@ const RenderAllOrder = () => {
               Tổng số {filteredOrder.length} đơn hàng
             </p>
           </div>
-          <div className="flex items-center">
+          <div className="flex items-center gap-2">
             <div className="relative">
               <input
                 type="text"
-                placeholder="Nhập tên hoặc số điện thoại khách hàng"
+                placeholder="Nhập tên hoặc số điện thoại"
                 className="w-[250px] p-3 border border-gray-600 rounded-xl outline-none"
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
@@ -118,11 +123,23 @@ const RenderAllOrder = () => {
               )}
             </div>
             <button
-              className="p-2 bg-orange-500 text-white rounded-md ml-1.5"
+              className="p-2 bg-orange-500 text-white rounded-md"
               onClick={handleSearch}
             >
               Tìm kiếm
             </button>
+
+            <select
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+              className="border border-gray-600 p-2 rounded"
+            >
+              <option value="">Hãy chọn trạng thái</option>
+              <option value="completed">Hoàn thành</option>
+              <option value="processing">Đang xử lý</option>
+              <option value="pending">Chờ xử lý</option>
+              <option value="cancelled">Đã hủy</option>
+            </select>
           </div>
         </div>
 
