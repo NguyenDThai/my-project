@@ -10,6 +10,9 @@ ol,
 ul {
   list-style: none;
 }
+input {
+  outline: none;
+}
 
 .menu-page-background {
   position: relative;

@@ -3,32 +3,24 @@
 
 import BtnUpdateStatus from "@/app/admin/_components/BtnUpdateStatus";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { ReactEventHandler, useEffect, useState } from "react";
 import { IoMdClose } from "react-icons/io";
 
 const RenderAllOrder = () => {
   const [orders, setOrders] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
   const [value, setValue] = useState("");
   const [filteredOrder, setFilteredOrder] = useState<any[]>([]);
   const [filterStatus, setFilterStatus] = useState("");
 
-  useEffect(() => {
-    try {
-      setLoading(true);
-      const fetchAllOrder = async () => {
-        const res = await fetch("/api/admin/order");
-        const data = await res.json();
-        setOrders(data.data);
-        setFilteredOrder(data.data);
-      };
+  const fetchAllOrder = async () => {
+    const res = await fetch("/api/admin/order");
+    const data = await res.json();
+    setOrders(data.data);
+    setFilteredOrder(data.data);
+  };
 
-      fetchAllOrder();
-    } catch (error: any) {
-      console.error(error.message);
-    } finally {
-      setLoading(false);
-    }
+  useEffect(() => {
+    fetchAllOrder();
   }, []);
 
   // Format currency
@@ -67,7 +59,8 @@ const RenderAllOrder = () => {
     const result = orders.filter((order) => {
       const matchKeyWord =
         order.name.toLowerCase().includes(keyword) ||
-        order.phone.toString().includes(keyword);
+        order.phone.toString().includes(keyword) ||
+        order._id.slice(-8).toLowerCase().includes(keyword);
 
       const matchStatus = filterStatus === "" || order.status === filterStatus;
 
@@ -77,53 +70,52 @@ const RenderAllOrder = () => {
     setFilteredOrder(result);
   };
 
+  const handleClearInput = () => {
+    setValue("");
+    fetchAllOrder();
+  };
+
   useEffect(() => {
     handleSearch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterStatus]);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6 sm:mb-8">
+          <div className="flex-1 min-w-0">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 truncate">
               Quản lý đơn hàng
             </h1>
-            <p className="text-gray-600 mt-2">
+            <p className="text-gray-600 mt-1 sm:mt-2 text-sm sm:text-base">
               Tổng số {filteredOrder.length} đơn hàng
             </p>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="relative">
+
+          <div className="flex flex-col lg:flex-row items-stretch xs:items-center gap-3 w-full lg:w-auto">
+            <div className="relative flex-1 xs:flex-none">
               <input
                 type="text"
                 placeholder="Nhập tên hoặc số điện thoại"
-                className="w-[250px] p-3 border border-gray-600 rounded-xl outline-none"
+                className="w-full xs:w-[200px] sm:w-[250px] p-2 sm:p-3 border border-gray-600 rounded-lg sm:rounded-xl text-sm sm:text-base"
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSearch()}
               />
               {value && (
                 <div
-                  onClick={() => setValue("")}
+                  onClick={handleClearInput}
                   className="absolute p-1 top-1/2 right-1 -translate-y-1/2 cursor-pointer"
                 >
-                  <IoMdClose size={20} />
+                  <IoMdClose size={18} className="sm:w-5 sm:h-5" />
                 </div>
               )}
             </div>
+
             <button
-              className="p-2 bg-orange-500 text-white rounded-md"
+              className="lg:hidden p-2 bg-orange-500 text-white rounded-lg text-sm font-medium"
               onClick={handleSearch}
             >
               Tìm kiếm
@@ -132,9 +124,9 @@ const RenderAllOrder = () => {
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="border border-gray-600 p-2 rounded"
+              className="border border-gray-600 p-2 sm:p-2 rounded-lg text-sm sm:text-base w-full xs:w-auto"
             >
-              <option value="">Hãy chọn trạng thái</option>
+              <option value="">Tất cả đơn hàng</option>
               <option value="completed">Hoàn thành</option>
               <option value="processing">Đang xử lý</option>
               <option value="pending">Chờ xử lý</option>
@@ -144,20 +136,20 @@ const RenderAllOrder = () => {
         </div>
 
         {/* Orders Grid */}
-        <div className="grid gap-6">
+        <div className="grid gap-4 sm:gap-6">
           {filteredOrder.length > 0 ? (
             filteredOrder.map((order: any, index: number) => (
               <div
                 key={index}
-                className="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200"
+                className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200 overflow-hidden"
               >
                 {/* Order Header */}
-                <div className="p-6 border-b border-gray-200">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                    <div className="flex items-center gap-4">
-                      <div className="bg-blue-50 rounded-lg p-3">
+                <div className="p-4 sm:p-6 border-b border-gray-200">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+                    <div className="flex items-center gap-3 sm:gap-4">
+                      <div className="bg-blue-50 rounded-lg p-2 sm:p-3 flex-shrink-0">
                         <svg
-                          className="w-6 h-6 text-blue-600"
+                          className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -170,8 +162,8 @@ const RenderAllOrder = () => {
                           />
                         </svg>
                       </div>
-                      <div>
-                        <h3 className="text-lg font-semibold text-gray-900">
+                      <div className="min-w-0 flex-1">
+                        <h3 className="text-lg font-semibold text-gray-900 truncate">
                           Đơn hàng #{order._id.slice(-8).toUpperCase()}
                         </h3>
                         <p className="text-sm text-gray-500 mt-1">
@@ -180,9 +172,9 @@ const RenderAllOrder = () => {
                       </div>
                     </div>
 
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-2 self-start sm:self-auto">
                       <span
-                        className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(
+                        className={`px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium border ${getStatusColor(
                           order.status
                         )}`}
                       >
@@ -199,17 +191,17 @@ const RenderAllOrder = () => {
                 </div>
 
                 {/* Order Body */}
-                <div className="p-6">
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="p-4 sm:p-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
                     {/* Customer Info */}
-                    <div className="space-y-4">
-                      <h4 className="font-semibold text-gray-900">
+                    <div className="space-y-3 sm:space-y-4">
+                      <h4 className="font-semibold text-gray-900 text-sm sm:text-base">
                         Thông tin khách hàng
                       </h4>
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-3">
+                      <div className="space-y-2 sm:space-y-3">
+                        <div className="flex items-center gap-2 sm:gap-3">
                           <svg
-                            className="w-4 h-4 text-gray-400"
+                            className="w-4 h-4 text-gray-400 flex-shrink-0"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -221,13 +213,13 @@ const RenderAllOrder = () => {
                               d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                             />
                           </svg>
-                          <span className="text-gray-900 font-medium">
+                          <span className="text-gray-900 font-medium text-sm sm:text-base truncate">
                             {order.name}
                           </span>
                         </div>
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2 sm:gap-3">
                           <svg
-                            className="w-4 h-4 text-gray-400"
+                            className="w-4 h-4 text-gray-400 flex-shrink-0"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -239,13 +231,13 @@ const RenderAllOrder = () => {
                               d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
                             />
                           </svg>
-                          <span className="text-gray-600">
+                          <span className="text-gray-600 text-sm sm:text-base">
                             +84 {order.phone}
                           </span>
                         </div>
-                        <div className="flex items-start gap-3">
+                        <div className="flex items-start gap-2 sm:gap-3">
                           <svg
-                            className="w-4 h-4 text-gray-400 mt-0.5"
+                            className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -263,13 +255,15 @@ const RenderAllOrder = () => {
                               d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                             />
                           </svg>
-                          <span className="text-gray-600">{order.address}</span>
+                          <span className="text-gray-600 text-sm sm:text-base break-words flex-1">
+                            {order.address}
+                          </span>
                         </div>
                       </div>
 
                       {order.note && (
-                        <div className="mt-4 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
-                          <p className="text-sm text-yellow-800">
+                        <div className="mt-3 sm:mt-4 p-2 sm:p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+                          <p className="text-xs sm:text-sm text-yellow-800">
                             <span className="font-medium">Ghi chú:</span>{" "}
                             {order.note}
                           </p>
@@ -279,36 +273,36 @@ const RenderAllOrder = () => {
 
                     {/* Order Items */}
                     <div className="lg:col-span-2">
-                      <h4 className="font-semibold text-gray-900 mb-4">
+                      <h4 className="font-semibold text-gray-900 mb-3 sm:mb-4 text-sm sm:text-base">
                         Sản phẩm
                       </h4>
-                      <div className="space-y-3">
+                      <div className="space-y-2 sm:space-y-3">
                         {order.items.map((item: any, itemIndex: number) => (
                           <div
                             key={itemIndex}
-                            className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                            className="flex items-center justify-between p-2 sm:p-3 bg-gray-50 rounded-lg"
                           >
-                            <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 bg-gray-200 rounded flex items-center justify-center">
+                            <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-200 rounded flex items-center justify-center flex-shrink-0">
                                 <Image
                                   src={item.image}
                                   alt="item-image"
                                   width={100}
                                   height={100}
-                                  className="h-full w-full"
+                                  className="h-full w-full object-cover rounded"
                                 />
                               </div>
-                              <div>
-                                <p className="font-medium text-gray-900">
+                              <div className="min-w-0 flex-1">
+                                <p className="font-medium text-gray-900 text-sm sm:text-base truncate">
                                   {item.name}
                                 </p>
-                                <p className="text-sm text-gray-500">
+                                <p className="text-xs sm:text-sm text-gray-500">
                                   Số lượng: {item.quantity} ×{" "}
                                   {formatCurrency(item.price)}
                                 </p>
                               </div>
                             </div>
-                            <span className="font-semibold text-gray-900">
+                            <span className="font-semibold text-gray-900 text-sm sm:text-base ml-2 flex-shrink-0">
                               {formatCurrency(item.quantity * item.price)}
                             </span>
                           </div>
@@ -316,9 +310,9 @@ const RenderAllOrder = () => {
                       </div>
 
                       {/* Order Summary */}
-                      <div className="mt-6 pt-4 border-t border-gray-200">
-                        <div className="space-y-2">
-                          <div className="flex justify-between text-gray-600">
+                      <div className="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-gray-200">
+                        <div className="space-y-1 sm:space-y-2">
+                          <div className="flex justify-between text-gray-600 text-sm sm:text-base">
                             <span>Tạm tính:</span>
                             <span>
                               {formatCurrency(
@@ -326,11 +320,11 @@ const RenderAllOrder = () => {
                               )}
                             </span>
                           </div>
-                          <div className="flex justify-between text-gray-600">
+                          <div className="flex justify-between text-gray-600 text-sm sm:text-base">
                             <span>Phí vận chuyển:</span>
                             <span>{formatCurrency(order.shippingFee)}</span>
                           </div>
-                          <div className="flex justify-between text-lg font-semibold text-gray-900 pt-2 border-t border-gray-200">
+                          <div className="flex justify-between text-base sm:text-lg font-semibold text-gray-900 pt-2 border-t border-gray-200">
                             <span>Tổng cộng:</span>
                             <span>{formatCurrency(order.totalPrice)}</span>
                           </div>
@@ -341,11 +335,11 @@ const RenderAllOrder = () => {
                 </div>
 
                 {/* Order Footer */}
-                <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 rounded-b-lg">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                    <div className="flex items-center gap-2 text-sm text-gray-500">
+                <div className="px-4 sm:px-6 py-3 sm:py-4 bg-gray-50 border-t border-gray-200 rounded-b-lg">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3">
+                    <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-500">
                       <svg
-                        className="w-4 h-4"
+                        className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -360,8 +354,8 @@ const RenderAllOrder = () => {
                       Cập nhật: {formatDate(order.updatedAt)}
                     </div>
 
-                    <div className="flex gap-2">
-                      <button className="px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors duration-200">
+                    <div className="flex gap-2 self-end sm:self-auto">
+                      <button className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors duration-200 whitespace-nowrap">
                         Xem chi tiết
                       </button>
                       <BtnUpdateStatus
@@ -384,10 +378,10 @@ const RenderAllOrder = () => {
               </div>
             ))
           ) : (
-            <div className="text-center py-12">
-              <div className="bg-gray-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+            <div className="text-center py-8 sm:py-12">
+              <div className="bg-gray-100 rounded-full w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center mx-auto mb-3 sm:mb-4">
                 <svg
-                  className="w-8 h-8 text-gray-400"
+                  className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -400,10 +394,10 @@ const RenderAllOrder = () => {
                   />
                 </svg>
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
+              <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-1 sm:mb-2">
                 Không có đơn hàng phù hợp
               </h3>
-              <p className="text-gray-500">
+              <p className="text-gray-500 text-sm sm:text-base">
                 Không tìm thấy đơn hàng theo từ khóa bạn nhập.
               </p>
             </div>
