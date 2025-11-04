@@ -5,16 +5,19 @@ import StepOrderOne from "@/components/StepOrderOne";
 import StepOrderTwo from "@/components/StepOrderTwo";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { FaUserAlt } from "react-icons/fa";
 import { MdOutlineProductionQuantityLimits } from "react-icons/md";
 import { SiTicktick } from "react-icons/si";
+import { toast } from "react-toastify";
 
 const CheckoutPage = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [user, setUser] = useState({});
   const { data: session } = useSession();
   const stepTwoRef = useRef<any>(null);
+  const router = useRouter();
 
   const steps = [
     {
@@ -49,8 +52,11 @@ const CheckoutPage = () => {
     if (currentStep === 2 && stepTwoRef.current) {
       const success = await stepTwoRef.current.createOrder();
       if (success) setCurrentStep(3);
-    } else {
+    } else if (session) {
       setCurrentStep(currentStep + 1);
+    } else {
+      toast.error("Vui lòng đăng nhập để tiến hàng thanh toán");
+      router.push("/login");
     }
   };
 
@@ -152,20 +158,16 @@ const CheckoutPage = () => {
             {currentStep < steps.length && (
               <button
                 onClick={handleNextStep}
-                className={`${
-                  session
-                    ? "ml-auto px-8 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors font-medium cursor-pointer"
-                    : "ml-auto px-8 py-3 bg-orange-300 text-white rounded-lg transition-colors font-medium cursor-not-allowed"
-                }`}
+                className="ml-auto px-8 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors font-medium cursor-pointer"
               >
                 Tiếp tục →
               </button>
             )}
 
             {currentStep === steps.length && (
-              <Link href="/">
-                <button className="ml-auto px-8 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors font-medium">
-                  Hoàn tất đơn hàng
+              <Link href="/user/order">
+                <button className="px-8 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors font-medium">
+                  Hoàn tất và xem lại đơn hàng
                 </button>
               </Link>
             )}

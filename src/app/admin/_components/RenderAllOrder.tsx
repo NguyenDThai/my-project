@@ -3,7 +3,7 @@
 
 import BtnUpdateStatus from "@/app/admin/_components/BtnUpdateStatus";
 import Image from "next/image";
-import React, { ReactEventHandler, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoMdClose } from "react-icons/io";
 
 const RenderAllOrder = () => {

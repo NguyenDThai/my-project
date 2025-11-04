@@ -81,7 +81,7 @@ const BtnUpdateStatus: React.FC<BtnUpdateStatusProps> = ({
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setOpen(false)}
-                className="px-3 py-1 text-sm text-gray-600 hover:text-gray-800"
+                className="px-3 py-1 text-sm text-orange-600 hover:text-orange-800 cursor-pointer"
                 disabled={loading}
               >
                 Hủy
@@ -89,7 +89,7 @@ const BtnUpdateStatus: React.FC<BtnUpdateStatusProps> = ({
 
               <button
                 onClick={handleUpdate}
-                className="px-4 py-1.5 text-sm text-white bg-green-600 cursor-pointer  rounded-md hover:bg-green-700 transition"
+                className="px-4 py-1.5 text-sm text-white bg-orange-600 cursor-pointer rounded-md hover:bg-orange-700 transition"
                 disabled={loading}
               >
                 {loading ? "Đang cập nhật..." : "Lưu"}
