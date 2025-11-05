@@ -89,12 +89,20 @@ const ModalAddAddress = ({
                 </div>
               ))
             )}
-            <button
-              onClick={() => setMode("add")}
-              className="w-full mt-4 py-2 border border-orange-400 text-orange-500 rounded-lg hover:bg-orange-50 font-medium"
-            >
-              + Thêm địa chỉ mới
-            </button>
+            <div className="flex items-center justify-between gap-3">
+              <button
+                onClick={() => setMode("add")}
+                className="w-full mt-4 py-2 border bg-orange-500 text-white rounded-lg hover:bg-white hover:text-orange-500 hover:border hover:border-orange-500 transition-all duration-700 font-medium cursor-pointer"
+              >
+                + Thêm địa chỉ mới
+              </button>
+              <button
+                onClick={onClose}
+                className="w-full mt-4 py-2 border border-orange-400 text-orange-500 rounded-lg hover:bg-orange-50 font-medium"
+              >
+                Hủy
+              </button>
+            </div>
           </div>
         )}
 
