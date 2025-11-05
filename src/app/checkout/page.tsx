@@ -38,13 +38,14 @@ const CheckoutPage = () => {
   ];
 
   // Lấy thông tin user lên đơn hàng
-  useEffect(() => {
-    const fetchUser = async () => {
-      const res = await fetch("/api/user/profile");
-      const data = await res.json();
-      setUser(data.user);
-    };
 
+  const fetchUser = async () => {
+    const res = await fetch("/api/user/profile");
+    const data = await res.json();
+    setUser(data.user);
+  };
+
+  useEffect(() => {
     fetchUser();
   }, []);
 
@@ -121,6 +122,7 @@ const CheckoutPage = () => {
               ref={stepTwoRef}
               user={user}
               onSuccessOrder={() => setCurrentStep(3)}
+              fetchUser={fetchUser}
             />
           )}
 

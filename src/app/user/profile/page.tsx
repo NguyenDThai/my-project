@@ -6,12 +6,19 @@ import Link from "next/link";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
+type Address = {
+  fullName: string;
+  phone: string;
+  address: string;
+  isDefault?: boolean;
+};
+
 type UserProfile = {
   name?: string;
   email?: string;
   image?: string;
-  address?: string;
   phone?: string;
+  addresses?: Address[];
 };
 
 const ProfileUser = () => {
@@ -32,7 +39,25 @@ const ProfileUser = () => {
         const data = await res.json();
 
         if (!res.ok) throw new Error(data.message || "Lỗi không xác định");
-        setProfile(data.user);
+        const user = data.user;
+        const defaultAddress =
+          user.addresses?.find((addr: any) => addr.isDefault) ||
+          user.addresses?.[0] ||
+          {};
+
+        setProfile({
+          name: user.name,
+          phone: defaultAddress.phone || "",
+          email: user.email,
+          image: user.image,
+          addresses: user.addresses,
+        });
+
+        setFormData({
+          name: user.name || "",
+          address: defaultAddress.address || "",
+          phone: defaultAddress.phone || "",
+        });
       } catch (error: any) {
         throw new Error(error.message);
       } finally {
@@ -45,10 +70,12 @@ const ProfileUser = () => {
 
   // Khi ma profile thay doi thi setformData chay lai de lay thong tin len o input
   useEffect(() => {
+    const defaultAddress = profile.addresses?.find((addr) => addr.isDefault);
+
     setFormData({
       name: profile.name || "",
-      address: profile.address || "",
-      phone: profile.phone || "",
+      address: defaultAddress?.address || "",
+      phone: defaultAddress?.phone || "",
     });
   }, [profile]);
 
@@ -59,10 +86,11 @@ const ProfileUser = () => {
   const handleEditToggle = () => {
     setEditing(!isEditing);
     if (isEditing) {
+      const defaultAddress = profile.addresses?.find((addr) => addr.isDefault);
       setFormData({
         name: profile.name || "",
-        address: profile.address || "",
-        phone: profile.phone || "",
+        address: defaultAddress?.address || "",
+        phone: defaultAddress?.phone || "",
       });
     }
   };
@@ -76,13 +104,30 @@ const ProfileUser = () => {
         headers: {
           "Content-type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          name: formData.name,
+          phone: formData.phone,
+          address: formData.address,
+        }),
       });
 
       const data = await response.json();
       if (response.ok) {
         toast.success(data.message);
         setEditing(false);
+        setProfile((prev) => ({
+          ...prev,
+          name: formData.name,
+          phone: formData.phone,
+          addresses: [
+            {
+              fullName: formData.name,
+              phone: formData.phone,
+              address: formData.address,
+              isDefault: true,
+            },
+          ],
+        }));
       }
     } catch (error: any) {
       console.error(error.message);

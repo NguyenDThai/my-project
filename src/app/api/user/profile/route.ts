@@ -19,7 +19,7 @@ export async function GET() {
     await connectDB();
 
     const user = await User.findOne({ email: session.user?.email }).select(
-      "name image email address phone"
+      "_id name image email addresses phone"
     );
 
     if (!user) {
@@ -29,7 +29,21 @@ export async function GET() {
       );
     }
 
-    return NextResponse.json({ user });
+    // Lay dia chi mac dinh neu co
+    const defaultAddress =
+      user.addresses.find((addr: any) => addr.isDefault) || null;
+
+    const userData = {
+      id: user._id.toString(),
+      name: user.name,
+      email: user.email,
+      image: user.image,
+      phone: defaultAddress?.phone || "",
+      address: defaultAddress?.address || "",
+      addresses: user.addresses,
+    };
+
+    return NextResponse.json({ user: userData });
   } catch (error) {
     console.error("Lỗi khi lấy profile:", error);
     return NextResponse.json({ message: "Lỗi server" }, { status: 500 });
@@ -54,26 +68,41 @@ export async function PUT(req: Request) {
 
     const user = await User.findOne({ email: session.user.email });
 
-    const updatedUser = await User.findByIdAndUpdate(
-      user._id,
-      {
-        name,
-        address,
-        phone,
-        updatedAt: new Date(),
-      },
-      {
-        new: true,
-        runValidators: true,
-      }
-    ).select("-password");
-
-    if (!updatedUser) {
+    if (!user) {
       return NextResponse.json(
-        { message: "Người dùng không tồn tại" },
+        { message: "Không tìm thấy người dùng" },
         { status: 404 }
       );
     }
+
+    // Cap nhat thong tin co ban
+    user.name = name || user.name;
+
+    if (!Array.isArray(user.addresses)) {
+      user.addresses = [];
+    }
+    // Tim dia chi mac dinh
+    const defaultIndex = user.addresses.findIndex(
+      (addr: any) => addr.isDefault
+    );
+
+    if (defaultIndex >= 0) {
+      user.addresses[defaultIndex].fullName =
+        name || user.addresses[defaultIndex].fullName;
+      user.addresses[defaultIndex].phone =
+        phone || user.addresses[defaultIndex].phone;
+      user.addresses[defaultIndex].address =
+        address || user.addresses[defaultIndex].address;
+    } else {
+      user.addresses.push({
+        fullName: name,
+        phone,
+        address,
+        isDefault: true,
+      });
+    }
+
+    const updatedUser = await user.save();
 
     return NextResponse.json(
       { message: "Cập nhật thông tin thành công", user: updatedUser },
