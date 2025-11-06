@@ -1,32 +1,34 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import Decentralization from "@/app/admin/_components/Decentralization";
 import React, { useEffect, useState } from "react";
 
 const RenderAllUser = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<any>(null);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await fetch("/api/admin/alluser");
-        const data = await res.json();
+  const fetchUser = async () => {
+    try {
+      const res = await fetch("/api/admin/alluser");
+      const data = await res.json();
 
-        if (!res.ok) {
-          setError(data.message || "Loi khong xac dinh");
-          setLoading(false);
-          return;
-        }
-        setUsers(data.users || []);
-      } catch (error: any) {
-        console.error(error.message);
-      } finally {
+      if (!res.ok) {
+        setError(data.message || "Loi khong xac dinh");
         setLoading(false);
+        return;
       }
-    };
-
+      setUsers(data.users || []);
+    } catch (error: any) {
+      console.error(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
     fetchUser();
   }, []);
 
@@ -173,9 +175,14 @@ const RenderAllUser = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                      {/* Btn edit for admin */}
                       <button
                         className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                         title="Chỉnh sửa"
+                        onClick={() => {
+                          setSelectedUser(user);
+                          setShowModal(true);
+                        }}
                       >
                         <svg
                           className="w-4 h-4"
@@ -239,6 +246,15 @@ const RenderAllUser = () => {
               ))}
             </tbody>
           </table>
+
+          {showModal && selectedUser && (
+            <Decentralization
+              setShowModal={setShowModal}
+              selectedUser={selectedUser}
+              setSelectedUser={setSelectedUser}
+              fetchUser={fetchUser}
+            />
+          )}
         </div>
 
         {/* Pagination */}
