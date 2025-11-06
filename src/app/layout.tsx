@@ -3,10 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ToastContainer } from "react-toastify";
 import Providers from "@/app/providers";
-import Header from "@/components/Header";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/authOptions";
 import CartProvider from "@/context/CartItem";
+import ConditionalHeader from "@/components/ConditionalHeader";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,17 +26,13 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await getServerSession(authOptions);
-
-  const adminRole = session?.user.role === "admin";
-
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
-          {!adminRole && <Header />}
+          <ConditionalHeader />
           <CartProvider>{children}</CartProvider>
         </Providers>
         <ToastContainer position="top-center" />
