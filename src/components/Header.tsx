@@ -76,7 +76,7 @@ const Header = () => {
         </Link>
 
         {/* Desktop Navigation Menu */}
-        <nav className="hidden lg:flex flex-1 max-w-2xl mx-8">
+        <nav className="hidden lg:flex max-w-2xl">
           <ul
             className={`flex items-center justify-center gap-6 font-medium ${
               isScroll ? "text-sm" : "text-base"

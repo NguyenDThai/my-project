@@ -138,11 +138,6 @@ const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const addToCart = (item: CartItem) => {
-    // if (!session) {
-    //   toast.error("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng!");
-    //   return;
-    // }
-
     setCart((prev) => {
       const existing = prev.find((p) => p._id === item._id);
       if (existing) {
@@ -154,7 +149,7 @@ const CartProvider = ({ children }: { children: ReactNode }) => {
       }
     });
 
-    toast.success(`${item.name} đã được thêm vào giỏ hàng!`);
+    toast.success("Thêm sản phẩm vào giỏ hàng thành công");
   };
 
   const handleDeleteItem = (itemId: string) => {
