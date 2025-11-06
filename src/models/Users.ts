@@ -19,6 +19,7 @@ const userSchema = new mongoose.Schema(
     password: { type: String, required: false, minLength: 6 },
     image: { type: String, default: "" },
     role: { type: String, default: "user" },
+    isActive: { type: Boolean, default: true },
     provider: { type: String, default: "credentials" }, //Để biết user đăng nhập bằng hình thức gì
   },
   { timestamps: true }

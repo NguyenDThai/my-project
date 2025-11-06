@@ -36,6 +36,7 @@ export const authOptions: NextAuthOptions = {
         const user = await User.findOne({ email: credentials.email }).select(
           "+password"
         );
+        if (!user.isActive) throw new Error("Tài khoản của bạn đã bị khóa");
 
         if (!user) throw new Error("Không tìm thấy người dùng");
 
@@ -51,6 +52,7 @@ export const authOptions: NextAuthOptions = {
           name: user.name,
           email: user.email,
           role: user.role,
+          isActive: user.isActive,
         };
       },
     }),

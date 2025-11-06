@@ -2,6 +2,7 @@
 "use client";
 
 import Decentralization from "@/app/admin/_components/Decentralization";
+import ModalDetailUser from "@/app/admin/_components/ModalDetailUser";
 import React, { useEffect, useState } from "react";
 
 const RenderAllUser = () => {
@@ -10,6 +11,7 @@ const RenderAllUser = () => {
   const [error, setError] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [showModalDetailUser, setShowModalDetailUser] = useState(false);
 
   const fetchUser = async () => {
     try {
@@ -123,37 +125,45 @@ const RenderAllUser = () => {
               {users.map((user: any) => (
                 <tr
                   key={user._id}
-                  className="hover:bg-orange-50/50 transition-all duration-200 group"
+                  className="group transition-all duration-200 hover:bg-orange-50/50"
                 >
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-gradient-to-r from-orange-400 to-orange-500 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                      <div
+                        className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold text-sm bg-gradient-to-r from-orange-400 to-orange-500`}
+                      >
                         {user.name.charAt(0).toUpperCase()}
                       </div>
                       <div>
-                        <div className="text-sm font-semibold text-gray-900 group-hover:text-orange-600 transition-colors">
+                        <div
+                          className={`text-sm font-semibold text-gray-900 group-hover:text-orange-600 transition-colors  `}
+                        >
                           {user.name}
                         </div>
                       </div>
                     </div>
                   </td>
+
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-700 font-medium">
                       {user.email}
                     </div>
                   </td>
+
                   <td className="px-6 py-4">
-                    <div className="text-sm text-gray-600 max-w-xs line-clamp-2 hover:line-clamp-none transition-all cursor-help">
+                    <div className="text-sm text-gray-600 max-w-xs line-clamp-2">
                       {user.addresses?.find((addr: any) => addr.isDefault)
                         ?.address || "Chưa cập nhật"}
                     </div>
                   </td>
+
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-700 font-mono">
                       {user.addresses?.find((addr: any) => addr.isDefault)
                         ?.phone || user.phone}
                     </div>
                   </td>
+
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
                       className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full capitalize ${
@@ -167,6 +177,7 @@ const RenderAllUser = () => {
                       {user.role}
                     </span>
                   </td>
+
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-600">
                       {new Date(user.createdAt).toLocaleDateString("vi-VN")}
@@ -175,13 +186,30 @@ const RenderAllUser = () => {
                       {new Date(user.createdAt).toLocaleTimeString("vi-VN")}
                     </div>
                   </td>
+
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                      {/* Btn edit for admin */}
+                    <div
+                      className={`flex items-center gap-2 transition-opacity duration-200 ${
+                        user.isActive
+                          ? "opacity-0 group-hover:opacity-100"
+                          : "opacity-30"
+                      }`}
+                    >
+                      {/* Btn edit role */}
                       <button
-                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
-                        title="Chỉnh sửa"
+                        disabled={!user.isActive}
+                        className={`p-2 rounded-lg transition-colors cursor-pointer ${
+                          user.isActive
+                            ? "text-blue-600 hover:bg-blue-50"
+                            : "text-gray-400 cursor-not-allowed"
+                        }`}
+                        title={
+                          user.isActive
+                            ? "Chỉnh sửa"
+                            : "Người dùng đã bị vô hiệu hóa"
+                        }
                         onClick={() => {
+                          if (!user.isActive) return;
                           setSelectedUser(user);
                           setShowModal(true);
                         }}
@@ -200,9 +228,23 @@ const RenderAllUser = () => {
                           />
                         </svg>
                       </button>
+
+                      {/* Btn view detail */}
                       <button
-                        className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors cursor-pointer"
-                        title="Xem chi tiết"
+                        className={`p-2 rounded-lg transition-colors cursor-pointer ${
+                          user.isActive
+                            ? "text-green-600 hover:bg-green-50"
+                            : "text-gray-400 hover:bg-gray-50"
+                        }`}
+                        title={
+                          user.isActive
+                            ? "Xem chi tiết"
+                            : "Người dùng bị khóa — bấm để mở lại"
+                        }
+                        onClick={() => {
+                          setSelectedUser(user);
+                          setShowModalDetailUser(true);
+                        }}
                       >
                         <svg
                           className="w-4 h-4"
@@ -236,6 +278,14 @@ const RenderAllUser = () => {
               setShowModal={setShowModal}
               selectedUser={selectedUser}
               setSelectedUser={setSelectedUser}
+              fetchUser={fetchUser}
+            />
+          )}
+
+          {showModalDetailUser && selectedUser && (
+            <ModalDetailUser
+              setShowModalDetailUser={setShowModalDetailUser}
+              selectedUser={selectedUser}
               fetchUser={fetchUser}
             />
           )}

@@ -25,11 +25,11 @@ const LoginPage = () => {
         password: data.password,
       });
 
-      if (res?.error) {
-        toast.error("Sai thông tin đăng nhập");
-      } else {
+      if (res?.ok) {
         toast.success("Đăng nhập thành công!");
         router.push("/");
+      } else {
+        toast.error(res?.error);
       }
     } catch (error) {
       console.error(error);
