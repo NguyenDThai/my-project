@@ -35,7 +35,7 @@ const ReviewModal = ({ setShowModal, orderId, fetchOrder }: any) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
+    <div className="fixed inset-0 bg-black/20 flex justify-center items-center z-50">
       <div className="bg-white rounded-2xl shadow-xl w-11/12 max-w-md p-6 relative animate-fade-in">
         <h3 className="text-lg font-bold text-gray-800 mb-4 text-center">
           Đánh giá đơn hàng

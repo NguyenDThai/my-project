@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import CancleOrderBtn from "@/components/CancleOrderBtn";
 import ItemForOrder from "@/components/ItemForOrder";
 import ReceivedProductBtn from "@/components/ReceivedProductBtn";
 import ReviewBtn from "@/components/ReviewBtn";
@@ -65,6 +66,7 @@ const RenderOrderUsers = ({
                   </p>
                 </div>
                 <div className="text-center lg:text-right">
+                  {/* Cac mau cua trang thai */}
                   <span
                     className={`inline-flex items-center px-3 py-1 lg:px-4 lg:py-2 rounded-full text-xs lg:text-sm font-semibold ${
                       order.status === "completed"
@@ -215,7 +217,7 @@ const RenderOrderUsers = ({
                       />
                     )}
 
-                  {order.status === "completed" && (
+                  {order.status === "completed" ? (
                     // Nut review Btn
                     <ReviewBtn
                       setShowModal={setShowModal}
@@ -223,7 +225,13 @@ const RenderOrderUsers = ({
                       orderId={order._id}
                       order={order}
                     />
+                  ) : (
+                    <CancleOrderBtn
+                      orderId={order._id}
+                      fetchOrder={fetchOrder}
+                    />
                   )}
+
                   <button className="px-3 py-2 lg:px-4 lg:py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-white hover:shadow-md transition-all duration-200 font-medium flex items-center justify-center text-xs lg:text-sm">
                     <span className="mr-1">🖨️</span>
                     In hóa đơn
