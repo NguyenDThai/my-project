@@ -11,6 +11,7 @@ const RenderOrderUsers = ({
   setShowModal,
   selectedOrderId,
   setSelectedOrderId,
+  fetchOrder,
 }: any) => {
   // Kiểm tra nếu orderUser là mảng và có dữ liệu
   if (!Array.isArray(orderUser) || orderUser.length === 0) {
@@ -258,7 +259,10 @@ const RenderOrderUsers = ({
                 <div className="flex flex-col sm:flex-row gap-2 lg:gap-3">
                   {order.status === "pending" &&
                     order.deliveryMethod === "delivery" && (
-                      <ReceivedProductBtn orderId={order._id} />
+                      <ReceivedProductBtn
+                        orderId={order._id}
+                        fetchOrder={fetchOrder}
+                      />
                     )}
 
                   {order.status === "completed" && (
@@ -266,6 +270,7 @@ const RenderOrderUsers = ({
                       setShowModal={setShowModal}
                       setSelectedOrderId={setSelectedOrderId}
                       orderId={order._id}
+                      order={order}
                     />
                   )}
                   <button className="px-3 py-2 lg:px-4 lg:py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-white hover:shadow-md transition-all duration-200 font-medium flex items-center justify-center text-xs lg:text-sm">
@@ -279,6 +284,7 @@ const RenderOrderUsers = ({
                 <ReviewModal
                   setShowModal={setShowModal}
                   orderId={selectedOrderId}
+                  fetchOrder={fetchOrder}
                 />
               )}
             </div>

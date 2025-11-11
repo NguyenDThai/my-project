@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import { FaStar } from "react-icons/fa";
 import { toast } from "react-toastify";
 
-const ReviewModal = ({ setShowModal, orderId }: any) => {
+const ReviewModal = ({ setShowModal, orderId, fetchOrder }: any) => {
   const [comment, setComment] = useState("");
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
@@ -27,6 +27,7 @@ const ReviewModal = ({ setShowModal, orderId }: any) => {
       if (res.ok) {
         toast.success(data.message);
         setShowModal(false);
+        fetchOrder();
       }
     } catch (error: any) {
       console.log(error.message);

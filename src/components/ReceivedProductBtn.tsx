@@ -4,7 +4,7 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 
-const ReceivedProductBtn = ({ orderId }: any) => {
+const ReceivedProductBtn = ({ orderId, fetchOrder }: any) => {
   const [loading, setLoading] = useState(false);
 
   const handleReceived = async (id: string) => {
@@ -20,6 +20,7 @@ const ReceivedProductBtn = ({ orderId }: any) => {
 
       if (res.ok) {
         toast.success("Xác nhận đơn hàng thành công, Chúc bạn ngon miệng");
+        fetchOrder();
       } else {
         throw new Error("Cập nhật thất bại");
       }

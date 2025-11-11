@@ -16,25 +16,25 @@ const OrderPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState("");
 
-  useEffect(() => {
-    const fetchOrderUser = async () => {
-      try {
-        const res = await fetch("/api/user/order");
-        const data = await res.json();
+  const fetchOrderUser = async () => {
+    try {
+      const res = await fetch("/api/user/order");
+      const data = await res.json();
 
-        if (!res.ok) {
-          throw new Error(data.message || "Lỗi khi lấy đơn hàng");
-        }
-
-        setOrderUser(data.orderUser);
-      } catch (error: any) {
-        console.error("Lỗi khi fetch đơn hàng:", error.message);
-        setError(error.message);
-      } finally {
-        setLoading(false);
+      if (!res.ok) {
+        throw new Error(data.message || "Lỗi khi lấy đơn hàng");
       }
-    };
 
+      setOrderUser(data.orderUser);
+    } catch (error: any) {
+      console.error("Lỗi khi fetch đơn hàng:", error.message);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchOrderUser();
   }, []);
 
@@ -62,6 +62,7 @@ const OrderPage = () => {
         setShowModal={setShowModal}
         selectedOrderId={selectedOrderId}
         setSelectedOrderId={setSelectedOrderId}
+        fetchOrder={fetchOrderUser}
       />
     </div>
   );
