@@ -5,6 +5,7 @@ import BtnUpdateStatus from "@/app/admin/_components/BtnUpdateStatus";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { IoMdClose } from "react-icons/io";
+import { TbTruckDelivery } from "react-icons/tb";
 
 const RenderAllOrder = () => {
   const [orders, setOrders] = useState<any[]>([]);
@@ -129,7 +130,7 @@ const RenderAllOrder = () => {
               <option value="">Tất cả đơn hàng</option>
               <option value="completed">Hoàn thành</option>
               <option value="processing">Đang xử lý</option>
-              <option value="pending">Chờ xử lý</option>
+              <option value="pending">Chờ giao hàng hoặc lấy hàng</option>
               <option value="cancelled">Đã hủy</option>
             </select>
           </div>
@@ -184,7 +185,9 @@ const RenderAllOrder = () => {
                           ? "Hoàn thành"
                           : order.status === "cancelled"
                           ? "Đã hủy"
-                          : "Chờ xử lý"}
+                          : order.deliveryMethod === "pickup"
+                          ? "Chờ lấy hàng"
+                          : "Chờ giao hàng"}
                       </span>
                     </div>
                   </div>
@@ -259,6 +262,14 @@ const RenderAllOrder = () => {
                             {order.address}
                           </span>
                         </div>
+                        <div className="flex items-center gap-2 sm:gap-3">
+                          <TbTruckDelivery className="text-gray-400 mt-0.5 flex-shrink-0" />
+                          <span className="text-gray-600 text-sm sm:text-base break-words flex-1">
+                            {order.deliveryMethod === "pickup"
+                              ? "Đến lấy tại cửa hàng"
+                              : "Giao hàng tận nơi"}
+                          </span>
+                        </div>
                       </div>
 
                       {order.note && (
@@ -320,10 +331,13 @@ const RenderAllOrder = () => {
                               )}
                             </span>
                           </div>
-                          <div className="flex justify-between text-gray-600 text-sm sm:text-base">
-                            <span>Phí vận chuyển:</span>
-                            <span>{formatCurrency(order.shippingFee)}</span>
-                          </div>
+
+                          {order.deliveryMethod === "delivery" && (
+                            <div className="flex justify-between text-gray-600 text-sm sm:text-base">
+                              <span>Phí vận chuyển:</span>
+                              <span>{formatCurrency(order.shippingFee)}</span>
+                            </div>
+                          )}
                           <div className="flex justify-between text-base sm:text-lg font-semibold text-gray-900 pt-2 border-t border-gray-200">
                             <span>Tổng cộng:</span>
                             <span>{formatCurrency(order.totalPrice)}</span>

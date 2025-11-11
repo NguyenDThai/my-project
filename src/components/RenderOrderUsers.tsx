@@ -1,8 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import ReceivedProductBtn from "@/components/ReceivedProductBtn";
+import ReviewBtn from "@/components/ReviewBtn";
+import ReviewModal from "@/components/ReviewModal";
 import Image from "next/image";
 import React from "react";
 
-const RenderOrderUsers = ({ orderUser }: any) => {
+const RenderOrderUsers = ({
+  orderUser,
+  showModal,
+  setShowModal,
+  selectedOrderId,
+  setSelectedOrderId,
+}: any) => {
   // Kiểm tra nếu orderUser là mảng và có dữ liệu
   if (!Array.isArray(orderUser) || orderUser.length === 0) {
     return (
@@ -63,7 +72,7 @@ const RenderOrderUsers = ({ orderUser }: any) => {
                         ? "bg-red-100 text-red-800"
                         : order.status === "processing"
                         ? "bg-blue-100 text-blue-800"
-                        : order.status === "delivered"
+                        : order.status === "shipped"
                         ? "bg-emerald-100 text-emerald-800"
                         : "bg-gray-100 text-gray-800"
                     }`}
@@ -71,12 +80,12 @@ const RenderOrderUsers = ({ orderUser }: any) => {
                     {order.status === "completed"
                       ? "✅ Đã hoàn thành"
                       : order.status === "pending"
-                      ? "⏳ Chờ xử lý"
+                      ? "⏳ Chờ lấy hàng"
                       : order.status === "cancelled"
                       ? "❌ Đã hủy"
                       : order.status === "processing"
                       ? "🔄 Đang xử lý"
-                      : order.status === "delivered"
+                      : order.status === "shipped"
                       ? "🚚 Đã giao hàng"
                       : order.status}
                   </span>
@@ -247,16 +256,31 @@ const RenderOrderUsers = ({ orderUser }: any) => {
                   </p>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-2 lg:gap-3">
+                  {order.status === "pending" &&
+                    order.deliveryMethod === "delivery" && (
+                      <ReceivedProductBtn orderId={order._id} />
+                    )}
+
+                  {order.status === "completed" && (
+                    <ReviewBtn
+                      setShowModal={setShowModal}
+                      setSelectedOrderId={setSelectedOrderId}
+                      orderId={order._id}
+                    />
+                  )}
                   <button className="px-3 py-2 lg:px-4 lg:py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-white hover:shadow-md transition-all duration-200 font-medium flex items-center justify-center text-xs lg:text-sm">
                     <span className="mr-1">🖨️</span>
                     In hóa đơn
                   </button>
-                  <button className="px-3 py-2 lg:px-4 lg:py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 hover:shadow-lg transition-all duration-200 font-medium flex items-center justify-center text-xs lg:text-sm">
-                    <span className="mr-1">📍</span>
-                    Theo dõi
-                  </button>
                 </div>
               </div>
+
+              {showModal && (
+                <ReviewModal
+                  setShowModal={setShowModal}
+                  orderId={selectedOrderId}
+                />
+              )}
             </div>
           </div>
         ))}

@@ -19,6 +19,11 @@ export interface IOrder extends Document {
   paymentStatus: "pending" | "paid" | "failed";
   deliveryMethod: "delivery" | "pickup";
   status: "processing" | "shipped" | "completed" | "cancelled";
+  review?: {
+    rating: number;
+    comment?: string;
+    createdAt: Date;
+  };
   createdAt: Date;
 }
 
@@ -48,13 +53,21 @@ const OrderSchema = new Schema<IOrder>(
     },
     deliveryMethod: {
       type: String,
-      enum: ["delivery", "pickup"],
+      enum: ["delivery", "pickup"], // Ship di va den cua hang nhan
       default: "delivery",
     },
     status: {
       type: String,
       enum: ["processing", "shipped", "completed", "cancelled"],
       default: "processing",
+    },
+    review: {
+      type: {
+        rating: { type: Number, min: 1, max: 5 },
+        comment: { type: String },
+        createdAt: { type: Date },
+      },
+      default: null,
     },
   },
   { timestamps: true }

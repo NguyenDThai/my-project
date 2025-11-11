@@ -12,7 +12,6 @@ interface BtnUpdateStatusProps {
 }
 
 const BtnUpdateStatus: React.FC<BtnUpdateStatusProps> = ({
-  order,
   orderId,
   currentStatus,
   onStatusUpdated,
@@ -72,7 +71,7 @@ const BtnUpdateStatus: React.FC<BtnUpdateStatusProps> = ({
               onChange={(e) => setNewStatus(e.target.value)}
               className="w-full border border-gray-300 rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-green-500"
             >
-              <option value="pending">Chờ xử lý</option>
+              <option value="pending">Chờ giao hàng hoặc lấy hàng</option>
               <option value="processing">Đang xử lý</option>
               <option value="completed">Hoàn thành</option>
               <option value="cancelled">Đã hủy</option>

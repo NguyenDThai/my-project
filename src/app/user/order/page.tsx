@@ -13,6 +13,8 @@ const OrderPage = () => {
   const [orderUser, setOrderUser] = useState<OrderUserType | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState("");
 
   useEffect(() => {
     const fetchOrderUser = async () => {
@@ -54,7 +56,13 @@ const OrderPage = () => {
 
   return (
     <div className="mt-20">
-      <RenderOrderUsers orderUser={orderUser} />
+      <RenderOrderUsers
+        orderUser={orderUser}
+        showModal={showModal}
+        setShowModal={setShowModal}
+        selectedOrderId={selectedOrderId}
+        setSelectedOrderId={setSelectedOrderId}
+      />
     </div>
   );
 };

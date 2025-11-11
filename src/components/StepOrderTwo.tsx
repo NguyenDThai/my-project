@@ -426,13 +426,22 @@ const StepOrderTwo = forwardRef(
                   <span>Tạm tính:</span>
                   <span>{total.toLocaleString()} đ</span>
                 </div>
-                <div className="flex justify-between text-gray-600">
-                  <span>Phí vận chuyển:</span>
-                  <span>{shippingFee.toLocaleString()} đ</span>
-                </div>
+
+                {selectedMethod === "delivery" && (
+                  <div className="flex justify-between text-gray-600">
+                    <span>Phí vận chuyển:</span>
+                    <span>{shippingFee.toLocaleString()} đ</span>
+                  </div>
+                )}
                 <div className="flex justify-between text-lg font-bold text-orange-600 border-t border-gray-200 pt-2">
                   <span>Tổng cộng:</span>
-                  <span>{(total + shippingFee).toLocaleString()} đ</span>
+                  <span>
+                    {(selectedMethod === "delivery"
+                      ? total + shippingFee
+                      : total
+                    ).toLocaleString()}{" "}
+                    đ
+                  </span>
                 </div>
               </div>
             </div>
