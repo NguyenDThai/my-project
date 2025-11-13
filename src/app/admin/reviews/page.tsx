@@ -65,7 +65,11 @@ const ReviewPageForAmin = () => {
           </div>
         ) : (
           <div className="grid gap-6">
-            <RenderReview renderReview={renderReview} />
+            <RenderReview
+              renderReview={renderReview}
+              setRenderReview={setRenderReview}
+              fetchReview={fetchReview}
+            />
           </div>
         )}
       </div>

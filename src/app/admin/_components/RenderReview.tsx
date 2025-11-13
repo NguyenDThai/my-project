@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import BrowseReviewsBtn from "@/app/admin/_components/BrowseReviewsBtn";
 import Image from "next/image";
 import React from "react";
 import { FaComments, FaRegAddressCard } from "react-icons/fa";
 
-const RenderReview = ({ renderReview }: any) => {
+const RenderReview = ({ renderReview, setRenderReview, fetchReview }: any) => {
   return (
     <>
       {renderReview.map((item: any) => {
@@ -64,9 +65,12 @@ const RenderReview = ({ renderReview }: any) => {
                       </span>
                       <span className="truncate">{item.address}</span>
                     </div>
-                    <button className="px-3 py-2 lg:px-4 lg:py-2 rounded-lg transition-all duration-200 font-medium flex items-center justify-center text-xs bg-orange-600 text-white hover:bg-orange-500 cursor-pointer lg:text-sm">
-                      Duyệt phản hồi
-                    </button>
+                    <BrowseReviewsBtn
+                      reviewItem={item}
+                      reviewId={item._id}
+                      fetchReview={fetchReview}
+                      setRenderReview={setRenderReview}
+                    />
                   </div>
                 </div>
               </div>

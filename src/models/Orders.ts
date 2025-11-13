@@ -23,6 +23,7 @@ export interface IOrder extends Document {
     rating: number;
     comment?: string;
     createdAt: Date;
+    approved: boolean;
   };
   createdAt: Date;
 }
@@ -66,6 +67,7 @@ const OrderSchema = new Schema<IOrder>(
         rating: { type: Number, min: 1, max: 5 },
         comment: { type: String },
         createdAt: { type: Date },
+        approved: { type: Boolean, default: false },
       },
       default: null,
     },
