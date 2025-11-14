@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-"use client";
 
 import BrowseReviewsBtn from "@/app/admin/_components/BrowseReviewsBtn";
 import Image from "next/image";
@@ -163,10 +162,13 @@ const RenderReview = ({ renderReview, setRenderReview, fetchReview }: any) => {
                       {item.totalPrice?.toLocaleString("vi-VN")}đ
                     </span>
                   </div>
-                  <div className="flex justify-between text-sm text-gray-600 mt-1">
-                    <span>Phí vận chuyển:</span>
-                    <span>{item.shippingFee?.toLocaleString("vi-VN")}đ</span>
-                  </div>
+
+                  {item.deliveryMethod === "delivery" && (
+                    <div className="flex justify-between text-sm text-gray-600 mt-1">
+                      <span>Phí vận chuyển:</span>
+                      <span>{item.shippingFee?.toLocaleString("vi-VN")}đ</span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

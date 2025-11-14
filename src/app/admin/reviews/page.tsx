@@ -11,7 +11,10 @@ interface ReviewRender extends IOrder {
 }
 const ReviewPageForAmin = () => {
   const [renderReview, setRenderReview] = useState<ReviewRender[]>([]);
+  const [allReview, setAllReview] = useState<ReviewRender[]>([]);
   const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const limit = 5;
 
   const fetchReview = async () => {
     try {
@@ -19,7 +22,7 @@ const ReviewPageForAmin = () => {
       const res = await fetch("/api/admin/allreview");
       const result = await res.json();
       if (res.ok) {
-        setRenderReview(result.data);
+        setAllReview(result.data);
       }
     } catch (error: any) {
       console.error(error.message);
@@ -29,8 +32,17 @@ const ReviewPageForAmin = () => {
   };
 
   useEffect(() => {
+    const start = (page - 1) * limit;
+    const end = start + limit;
+
+    setRenderReview(allReview.slice(start, end));
+  }, [page, allReview]);
+
+  useEffect(() => {
     fetchReview();
   }, []);
+
+  const totalPages = Math.ceil(allReview.length / limit);
 
   if (loading) {
     return (
@@ -70,6 +82,28 @@ const ReviewPageForAmin = () => {
               setRenderReview={setRenderReview}
               fetchReview={fetchReview}
             />
+
+            <div className="flex justify-center items-center gap-3 mt-6">
+              <button
+                onClick={() => setPage((p) => Math.max(p - 1, 1))}
+                disabled={page === 1}
+                className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50 cursor-pointer"
+              >
+                ← Trước
+              </button>
+
+              <span className="text-gray-600 text-sm">
+                Trang {page} / {totalPages}
+              </span>
+
+              <button
+                onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+                disabled={page === totalPages}
+                className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50 cursor-pointer"
+              >
+                Sau →
+              </button>
+            </div>
           </div>
         )}
       </div>
