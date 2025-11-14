@@ -4,6 +4,7 @@
 import BtnUpdateStatus from "@/app/admin/_components/BtnUpdateStatus";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
+import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 import { IoMdClose } from "react-icons/io";
 import { TbTruckDelivery } from "react-icons/tb";
 
@@ -12,6 +13,8 @@ const RenderAllOrder = () => {
   const [value, setValue] = useState("");
   const [filteredOrder, setFilteredOrder] = useState<any[]>([]);
   const [filterStatus, setFilterStatus] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemPerPage = 5;
 
   const fetchAllOrder = async () => {
     const res = await fetch("/api/admin/order");
@@ -81,6 +84,13 @@ const RenderAllOrder = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterStatus]);
 
+  const totalPage = Math.ceil(filteredOrder.length / itemPerPage);
+
+  const currentData = filteredOrder.slice(
+    (currentPage - 1) * itemPerPage,
+    currentPage * itemPerPage
+  );
+
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
       <div className="max-w-7xl mx-auto">
@@ -139,7 +149,7 @@ const RenderAllOrder = () => {
         {/* Orders Grid */}
         <div className="grid gap-4 sm:gap-6">
           {filteredOrder.length > 0 ? (
-            filteredOrder.map((order: any, index: number) => (
+            currentData.map((order: any, index: number) => (
               <div
                 key={index}
                 className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200 overflow-hidden"
@@ -368,6 +378,7 @@ const RenderAllOrder = () => {
                       Cập nhật: {formatDate(order.updatedAt)}
                     </div>
 
+                    {/* Action Btn */}
                     <div className="flex gap-2 self-end sm:self-auto">
                       <button className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors duration-200 whitespace-nowrap">
                         Xem chi tiết
@@ -417,6 +428,36 @@ const RenderAllOrder = () => {
               </p>
             </div>
           )}
+
+          <div className="flex items-center justify-center gap-2 mt-4">
+            <button
+              className={`p-3 bg-gray-200 rounded-full disabled:opacity-50 cursor-pointer ${
+                currentPage === 1
+                  ? ""
+                  : "hover:bg-orange-500 hover:text-white transition-all duration-300"
+              }`}
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage((prev) => prev - 1)}
+            >
+              <GrFormPrevious size={20} />
+            </button>
+
+            <span>
+              Trang {currentPage}/{totalPage}
+            </span>
+
+            <button
+              className={`p-3 bg-gray-200 ${
+                currentPage === totalPage
+                  ? ""
+                  : "hover:bg-orange-500 hover:text-white transition-all duration-300"
+              } rounded-full disabled:opacity-50 cursor-pointer`}
+              disabled={currentPage === totalPage}
+              onClick={() => setCurrentPage((prev) => prev + 1)}
+            >
+              <GrFormNext size={20} />
+            </button>
+          </div>
         </div>
       </div>
     </div>
