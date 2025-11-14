@@ -9,12 +9,14 @@ interface BtnUpdateStatusProps {
   orderId: string;
   currentStatus: string;
   onStatusUpdated?: (newStatus: string) => void;
+  fetchAllOrder: () => void;
 }
 
 const BtnUpdateStatus: React.FC<BtnUpdateStatusProps> = ({
   orderId,
   currentStatus,
   onStatusUpdated,
+  fetchAllOrder,
 }) => {
   const [open, setOpen] = useState(false);
   const [newStatus, setNewStatus] = useState(currentStatus);
@@ -36,6 +38,7 @@ const BtnUpdateStatus: React.FC<BtnUpdateStatusProps> = ({
 
       toast.success("Cập nhật trạng thái thành công!");
       setOpen(false);
+      fetchAllOrder();
     } catch (err) {
       console.error(err);
       toast.error("Có lỗi xảy ra khi cập nhật trạng thái");

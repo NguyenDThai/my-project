@@ -375,6 +375,7 @@ const RenderAllOrder = () => {
                       <BtnUpdateStatus
                         order={order}
                         orderId={order._id}
+                        fetchAllOrder={fetchAllOrder}
                         currentStatus={order.status}
                         onStatusUpdated={(newStatus) => {
                           setOrders((prev) =>
