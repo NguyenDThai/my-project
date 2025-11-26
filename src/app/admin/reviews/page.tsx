@@ -4,11 +4,13 @@
 import RenderReview from "@/app/admin/_components/RenderReview";
 import { IOrder } from "@/models/Orders";
 import React, { useEffect, useState } from "react";
+import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 
 interface ReviewRender extends IOrder {
   _id: string;
   updatedAt: Date;
 }
+
 const ReviewPageForAmin = () => {
   const [renderReview, setRenderReview] = useState<ReviewRender[]>([]);
   const [allReview, setAllReview] = useState<ReviewRender[]>([]);
@@ -87,9 +89,13 @@ const ReviewPageForAmin = () => {
               <button
                 onClick={() => setPage((p) => Math.max(p - 1, 1))}
                 disabled={page === 1}
-                className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50 cursor-pointer"
+                className={`p-3 bg-gray-300 rounded-full ${
+                  page === 1
+                    ? ""
+                    : "hover:bg-orange-500 hover:text-white transition duration-300"
+                } disabled:opacity-50 cursor-pointer`}
               >
-                ← Trước
+                <GrFormPrevious size={20} />
               </button>
 
               <span className="text-gray-600 text-sm">
@@ -99,9 +105,13 @@ const ReviewPageForAmin = () => {
               <button
                 onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
                 disabled={page === totalPages}
-                className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50 cursor-pointer"
+                className={`p-3 bg-gray-300 rounded-full ${
+                  page === totalPages
+                    ? ""
+                    : "hover:bg-orange-500 hover:text-white transition duration-300"
+                } disabled:opacity-50 cursor-pointer`}
               >
-                Sau →
+                <GrFormNext size={20} />
               </button>
             </div>
           </div>
