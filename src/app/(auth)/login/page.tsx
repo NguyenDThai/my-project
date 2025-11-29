@@ -103,7 +103,7 @@ const LoginPage = () => {
             <span className="ml-2 text-gray-600">Ghi nhớ đăng nhập</span>
           </label>
           <a
-            href="#"
+            href="/forgot-password"
             className="text-orange-600 hover:text-orange-700 transition-colors"
           >
             Quên mật khẩu?

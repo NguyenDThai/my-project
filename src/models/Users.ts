@@ -21,6 +21,8 @@ const userSchema = new mongoose.Schema(
     role: { type: String, default: "user" },
     isActive: { type: Boolean, default: true },
     provider: { type: String, default: "credentials" }, //Để biết user đăng nhập bằng hình thức gì
+    resetToken: { type: String },
+    resetTokenExpiry: { type: Date },
   },
   { timestamps: true }
 );
