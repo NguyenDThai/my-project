@@ -6,7 +6,7 @@ import Snowfall from "react-snowfall";
 const SnowEffect = () => {
   return (
     <div className="pointer-events-none fixed inset-0 z-50">
-      <Snowfall snowflakeCount={1000} />
+      <Snowfall snowflakeCount={500} />
     </div>
   );
 };
