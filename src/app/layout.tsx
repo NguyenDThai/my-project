@@ -6,7 +6,6 @@ import Providers from "@/app/providers";
 import CartProvider from "@/context/CartItem";
 import ConditionalHeader from "@/components/ConditionalHeader";
 import SnowEffect from "@/components/SnowEffect";
-import ChristmasMusic from "@/components/ChristmasMusic";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,9 +34,7 @@ export default async function RootLayout({
       >
         <Providers>
           <ConditionalHeader />
-
           <SnowEffect />
-          <ChristmasMusic />
           <CartProvider>{children}</CartProvider>
         </Providers>
         <ToastContainer position="top-center" />
