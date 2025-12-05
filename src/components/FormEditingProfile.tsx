@@ -1,8 +1,9 @@
 "use client";
 
+import EditAvatarProfile from "@/components/EditAvatarProfile";
 import FormChangePasswordProfile from "@/components/FormChangePasswordProfile";
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import Image from "next/image";
+
 import React, { useState } from "react";
 
 const FormEditingProfile = ({
@@ -19,16 +20,8 @@ const FormEditingProfile = ({
       <h2 className="text-2xl font-bold text-gray-900 mb-6">Chỉnh sửa hồ sơ</h2>
 
       <form className="w-full space-y-4" onSubmit={handleSubmit}>
-        {/* Avatar Preview */}
-        <div className="flex flex-col items-center mb-4">
-          <Image
-            src={profile.image || "/default-image.jpg"}
-            alt="avatar preview"
-            width={100}
-            height={100}
-            className="rounded-full border-4 border-white shadow-lg mb-4"
-          />
-        </div>
+        {/* Avatar + Button Upload */}
+        <EditAvatarProfile profile={profile} />
 
         <h2 className="text-xl font-semibold">Thông tin cá nhân</h2>
 
