@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import FormEditingProfile from "@/components/FormEditingProfile";
 import Image from "next/image";
 import Link from "next/link";
 import React, { ChangeEvent, useEffect, useState } from "react";
@@ -24,7 +25,7 @@ type UserProfile = {
 const ProfileUser = () => {
   const [profile, setProfile] = useState<UserProfile>({});
 
-  const [lodaing, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [isEditing, setEditing] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -134,7 +135,7 @@ const ProfileUser = () => {
     }
   };
 
-  if (lodaing) {
+  if (loading) {
     return (
       <div className="mt-50 flex flex-col items-center justify-center p-6 bg-gray-50 rounded-lg shadow-md border border-gray-200 max-w-sm mx-auto animate-pulse">
         <div className="w-24 h-24 rounded-full bg-gray-200 mb-4"></div>
@@ -149,93 +150,18 @@ const ProfileUser = () => {
 
   if (isEditing) {
     return (
-      <div className="mt-50 flex flex-col items-center p-8 bg-white rounded-xl shadow-lg border border-gray-100 max-w-md mx-auto">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">
-          Chỉnh sửa hồ sơ
-        </h2>
-
-        <form className="w-full space-y-4" onSubmit={handleSubmit}>
-          {/* Avatar Preview */}
-          <div className="flex flex-col items-center mb-4">
-            <Image
-              src={profile.image || "/default-image.jpg"}
-              alt="avatar preview"
-              width={100}
-              height={100}
-              className="rounded-full border-4 border-white shadow-lg mb-4"
-            />
-          </div>
-
-          {/* Form Fields */}
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Họ và tên
-              </label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
-                placeholder="Nhập họ và tên"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Địa chỉ
-              </label>
-              <input
-                type="text"
-                name="address"
-                value={formData.address}
-                onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
-                placeholder="Nhập địa chỉ"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Số điện thoại
-              </label>
-              <input
-                type="number"
-                name="phone"
-                value={formData.phone}
-                onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
-                placeholder="Nhập số điện thoại"
-                required
-              />
-            </div>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex gap-3 pt-4">
-            <button
-              type="button"
-              onClick={handleEditToggle}
-              className="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-3 px-4 rounded-xl transition-all duration-300 font-semibold shadow-md hover:shadow-lg"
-            >
-              Hủy
-            </button>
-            <button
-              type="submit"
-              className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white py-3 px-4 rounded-xl transition-all duration-300 font-semibold shadow-md hover:shadow-lg"
-            >
-              Lưu thay đổi
-            </button>
-          </div>
-        </form>
-      </div>
+      <FormEditingProfile
+        handleSubmit={handleSubmit}
+        formData={formData}
+        profile={profile}
+        handleInputChange={handleInputChange}
+        handleEditToggle={handleEditToggle}
+      />
     );
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen relative">
       <div className="mt-50 flex flex-col items-center p-8 bg-white rounded-xl shadow-lg border border-gray-100 max-w-md mx-auto">
         <div className="relative mb-6">
           <Image
