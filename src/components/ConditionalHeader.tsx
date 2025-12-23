@@ -3,6 +3,7 @@
 import React from "react";
 import { useSession } from "next-auth/react";
 import Header from "@/components/Header";
+import Chatbot from "@/components/Chatbot";
 
 const ConditionalHeader = () => {
   const { data: session, status } = useSession();
@@ -16,7 +17,12 @@ const ConditionalHeader = () => {
     return null;
   }
 
-  return <Header />;
+  return (
+    <>
+      <Header />
+      <Chatbot />
+    </>
+  );
 };
 
 export default ConditionalHeader;
