@@ -3,17 +3,18 @@
 "use client";
 
 import ModalAddAddress from "@/components/ModalAddAddress";
+import OrderDetail from "@/components/OrderDetail";
+import ShippingMethod from "@/components/ShippingMethod";
 import { useCart } from "@/context/CartItem";
 import { useSession } from "next-auth/react";
-import Image from "next/image";
-import Link from "next/link";
+
 import React, {
   useEffect,
   useState,
   useImperativeHandle,
   forwardRef,
 } from "react";
-import { FaPen } from "react-icons/fa";
+
 import { toast } from "react-toastify";
 
 type User = {
@@ -23,13 +24,16 @@ type User = {
   note?: string;
 };
 
+export type OrderMethod = "delivery" | "pickup";
+
 const StepOrderTwo = forwardRef(
   ({ user, onSuccessOrder, fetchUser }: any, ref) => {
     const { cart, total } = useCart();
     const [shippingFee, setShippingFee] = useState(15000);
     const [isEditing, setIsEditing] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [selectedMethod, setSeletedMethod] = useState("delivery");
+    const [selectedMethod, setSeletedMethod] =
+      useState<OrderMethod>("delivery");
     const [formData, setFormData] = useState<User>({
       name: "",
       phone: "",
@@ -125,7 +129,7 @@ const StepOrderTwo = forwardRef(
     };
 
     // lấy dữ liệu cho phương thức vận chuyển
-    const handleSelectMethod = (method: string) => {
+    const handleSelectMethod = (method: OrderMethod) => {
       setSeletedMethod(method);
       setFormData((prev) => ({
         ...prev,
@@ -293,159 +297,23 @@ const StepOrderTwo = forwardRef(
               </div>
             )}
 
-            <div className="mt-10">
-              {/* Tiêu đề */}
-              <div className="text-lg font-semibold mb-4">
-                Phương thức vận chuyển
-              </div>
+            {/* Phương thức vận chuyển */}
 
-              <div className="space-y-4">
-                {/* Phương thức 1: Giao hàng tận nơi */}
-                <div
-                  className="flex items-center space-x-3 p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50"
-                  onClick={() => handleSelectMethod("delivery")}
-                >
-                  <div className="flex items-center justify-center w-5 h-5 border border-gray-300 rounded-full">
-                    {selectedMethod === "delivery" && (
-                      <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
-                    )}
-                  </div>
-                  <div>
-                    <div className="font-medium">Giao hàng tận nơi</div>
-                  </div>
-                </div>
-
-                {/* Phương thức 2: Hẹn lấy tại cửa hàng */}
-                <div
-                  className="flex items-start space-x-3 p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50"
-                  onClick={() => handleSelectMethod("pickup")}
-                >
-                  <div className="flex items-center justify-center w-5 h-5 border border-gray-300 rounded-full mt-1">
-                    {selectedMethod === "pickup" && (
-                      <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
-                    )}
-                  </div>
-                  <div className="flex-1">
-                    <div className="font-medium">Hẹn lấy tại cửa hàng</div>
-
-                    {/* Thông tin cửa hàng - chỉ hiển thị khi chọn phương thức này */}
-                    {selectedMethod === "pickup" && (
-                      <div className="mt-3 space-y-3">
-                        <div>
-                          <div className="text-sm font-medium mb-2">
-                            Tỉnh thành
-                          </div>
-                          <select className="w-full p-2 border border-gray-300 rounded-md text-sm">
-                            <option>Cần Thơ</option>
-                          </select>
-                        </div>
-
-                        <div>
-                          <div className="text-sm font-medium mb-2">
-                            Cửa hàng *
-                          </div>
-                          <select className="w-full p-2 border border-gray-300 rounded-md text-sm">
-                            <option>Chọn cửa hàng</option>
-                            <option>Cửa hàng 1 - Quận Ninh Kiều</option>
-                            <option>Cửa hàng 2 - Quận Cái Răng</option>
-                            <option>Cửa hàng 3 - Quận Bình Thủy</option>
-                            <option>Cửa hàng 4 - Quận Ô Môn</option>
-                            <option>Cửa hàng 5 - Quận Thốt Nốt</option>
-                          </select>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* Ghi chú đơn hàng */}
-              <div className="mt-6">
-                <div className="text-sm font-medium mb-2">GHI CHÚ ĐƠN HÀNG</div>
-                <textarea
-                  name="note"
-                  value={formData.note || ""}
-                  onChange={handleChangeInput}
-                  placeholder="Ghi chú"
-                  className="w-full p-3 border border-gray-300 rounded-md resize-none"
-                  rows={3}
-                />
-              </div>
-            </div>
+            <ShippingMethod
+              formData={formData}
+              selectedMethod={selectedMethod}
+              handleSelectMethod={handleSelectMethod}
+              handleChangeInput={handleChangeInput}
+            />
           </div>
 
           {/* Chi tiết đơn hàng */}
-          <div className="lg:w-96">
-            <div className="bg-[#f5f1e6] rounded-2xl p-6 border border-gray-200">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl font-semibold text-gray-900">
-                  CHI TIẾT ĐƠN HÀNG
-                </h3>
-                <Link href="/menu">
-                  <FaPen
-                    size={15}
-                    className="hover:text-orange-400 transition-all duration-300 cursor-pointer"
-                  />
-                </Link>
-              </div>
-
-              {/* Danh sách sản phẩm */}
-              <div className="space-y-4 max-h-80 overflow-y-auto mb-4">
-                {cart.map((item) => (
-                  <div
-                    key={item._id}
-                    className="flex items-center gap-3 p-3 bg-white rounded-lg border border-gray-200"
-                  >
-                    <Image
-                      src={item.image || "/placeholder.png"}
-                      alt={item.name}
-                      width={100}
-                      height={100}
-                      className="w-12 h-12 rounded-lg object-cover"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-semibold text-gray-900 text-sm truncate">
-                        {item.name}
-                      </h4>
-                      <div className="flex justify-between items-center mt-1">
-                        <span className="text-orange-500 font-bold">
-                          {item.price.toLocaleString()} đ
-                        </span>
-                        <span className="text-gray-600 text-sm">
-                          x{item.quantity}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Tổng tiền */}
-              <div className="border-t border-gray-200 pt-4 space-y-2">
-                <div className="flex justify-between text-gray-600">
-                  <span>Tạm tính:</span>
-                  <span>{total.toLocaleString()} đ</span>
-                </div>
-
-                {selectedMethod === "delivery" && (
-                  <div className="flex justify-between text-gray-600">
-                    <span>Phí vận chuyển:</span>
-                    <span>{shippingFee.toLocaleString()} đ</span>
-                  </div>
-                )}
-                <div className="flex justify-between text-lg font-bold text-orange-600 border-t border-gray-200 pt-2">
-                  <span>Tổng cộng:</span>
-                  <span>
-                    {(selectedMethod === "delivery"
-                      ? total + shippingFee
-                      : total
-                    ).toLocaleString()}{" "}
-                    đ
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
+          <OrderDetail
+            cart={cart}
+            selectedMethod={selectedMethod}
+            total={total}
+            shippingFee={shippingFee}
+          />
         </div>
       </div>
     );
