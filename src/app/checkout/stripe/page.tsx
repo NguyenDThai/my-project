@@ -8,7 +8,7 @@ import {
 } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { LuArrowLeft, LuSmartphone } from "react-icons/lu";
 import { IoAlertCircle, IoAlertCircleOutline } from "react-icons/io5";
 import {
@@ -254,7 +254,9 @@ export default function StripeCheckoutPage() {
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
           <div className="p-6 md:p-8">
             <Elements stripe={stripePromise} options={{ clientSecret }}>
-              <CheckoutForm />
+              <Suspense fallback={<div>Đang tải...</div>}>
+                <CheckoutForm />
+              </Suspense>
             </Elements>
           </div>
 
