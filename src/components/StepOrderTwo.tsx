@@ -4,6 +4,7 @@
 
 import ModalAddAddress from "@/components/ModalAddAddress";
 import OrderDetail from "@/components/OrderDetail";
+import PaymentMethod from "@/components/PaymentMethod";
 import ShippingMethod from "@/components/ShippingMethod";
 import { useCart } from "@/context/CartItem";
 import { useSession } from "next-auth/react";
@@ -25,6 +26,7 @@ type User = {
 };
 
 export type OrderMethod = "delivery" | "pickup";
+type PaymentMethodType = "cod" | "atm" | "zalopay";
 
 const StepOrderTwo = forwardRef(
   ({ user, onSuccessOrder, fetchUser }: any, ref) => {
@@ -42,6 +44,9 @@ const StepOrderTwo = forwardRef(
     const { data: session } = useSession();
     const [openModal, setOpenModal] = useState(false);
     const [selectedAddress, setSelectedAddress] = useState<any>(null);
+
+    const [methodPayment, setMethodPayment] =
+      useState<PaymentMethodType>("cod");
 
     // Load thông tin user khi component mount hoặc user thay đổi
     useEffect(() => {
@@ -158,6 +163,7 @@ const StepOrderTwo = forwardRef(
             total,
             shippingFee,
             deliveryMethod: selectedMethod,
+            methodPayment,
           }),
           headers: {
             "Content-type": "application/json",
@@ -166,12 +172,15 @@ const StepOrderTwo = forwardRef(
 
         const data = await res.json();
 
-        if (res.ok) {
-          toast.success("Đặt hàng thành công");
-          onSuccessOrder();
-        } else {
+        if (!res.ok) {
           toast.error(data.message || "Không thể tạo đơn hàng");
+          return null;
         }
+
+        return {
+          order: data.order,
+          methodPayment,
+        };
       } catch (error) {
         console.error("Lỗi khi tạo đơn hàng:", error);
         toast.error("Đã xảy ra lỗi, vui lòng thử lại");
@@ -307,13 +316,20 @@ const StepOrderTwo = forwardRef(
             />
           </div>
 
-          {/* Chi tiết đơn hàng */}
-          <OrderDetail
-            cart={cart}
-            selectedMethod={selectedMethod}
-            total={total}
-            shippingFee={shippingFee}
-          />
+          <div>
+            {/* Chi tiết đơn hàng */}
+            <OrderDetail
+              cart={cart}
+              selectedMethod={selectedMethod}
+              total={total}
+              shippingFee={shippingFee}
+            />
+
+            <PaymentMethod
+              methodPayment={methodPayment}
+              setMethodPayment={setMethodPayment}
+            />
+          </div>
         </div>
       </div>
     );

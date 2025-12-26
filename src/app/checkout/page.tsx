@@ -3,6 +3,7 @@
 
 import StepOrderOne from "@/components/StepOrderOne";
 import StepOrderTwo from "@/components/StepOrderTwo";
+
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -15,7 +16,7 @@ import { toast } from "react-toastify";
 const CheckoutPage = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [user, setUser] = useState({});
-  const { data: session } = useSession();
+
   const stepTwoRef = useRef<any>(null);
   const router = useRouter();
 
@@ -51,13 +52,38 @@ const CheckoutPage = () => {
 
   const handleNextStep = async () => {
     if (currentStep === 2 && stepTwoRef.current) {
-      const success = await stepTwoRef.current.createOrder();
-      if (success) setCurrentStep(3);
-    } else if (session) {
-      setCurrentStep(currentStep + 1);
-    } else {
-      toast.error("Vui lòng đăng nhập để tiến hàng thanh toán");
-      router.push("/login");
+      const result = await stepTwoRef.current.createOrder();
+      if (!result) return;
+
+      const { order, methodPayment } = result;
+
+      // cod
+
+      if (methodPayment === "cod") {
+        toast.success("Đặt hàng thành công");
+        setCurrentStep(3);
+        return;
+      }
+
+      // atm - stripe
+
+      if (methodPayment === "atm") {
+        const res = await fetch("/api/payment/stripe", {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify({
+            orderId: order._id,
+            amount: order.totalPrice + order.shippingFee,
+          }),
+        });
+
+        const { clientSecret } = await res.json();
+        router.push(`/checkout/stripe?cs=${clientSecret}&orderId=${order._id}`);
+
+        return;
+      }
     }
   };
 

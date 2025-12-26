@@ -49,7 +49,7 @@ const OrderSchema = new Schema<IOrder>(
     shippingFee: { type: Number, default: 15000 },
     paymentStatus: {
       type: String,
-      enum: ["pending", "paid", "failed"],
+      enum: ["pending", "paid", "failed", "completed"],
       default: "pending",
     },
     deliveryMethod: {
