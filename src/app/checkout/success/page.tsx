@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 
 import Link from "next/link";
 import {
@@ -40,7 +40,6 @@ const SuccessPayment = () => {
   const searchParam = useSearchParams();
   const orderId = searchParam.get("orderId");
   const [orderDetail, setOrderDetail] = useState<OrderDetailType | null>(null);
-  console.log("🚀 ~ SuccessPayment ~ orderDetail:", orderDetail);
 
   useEffect(() => {
     if (!orderId) return;
@@ -354,4 +353,10 @@ const SuccessPayment = () => {
   );
 };
 
-export default SuccessPayment;
+export default function SuccessPaymentPage() {
+  return (
+    <Suspense fallback={<div>Đang tải...</div>}>
+      <SuccessPayment />
+    </Suspense>
+  );
+}
