@@ -178,7 +178,7 @@ function CheckoutForm() {
   );
 }
 
-export default function StripeCheckoutPage() {
+function StripePage() {
   const searchParams = useSearchParams();
   const clientSecret = searchParams.get("cs");
   const [loading, setLoading] = useState(true);
@@ -307,5 +307,13 @@ export default function StripeCheckoutPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function StripeCheckoutPage() {
+  return (
+    <Suspense fallback={<div>Đang tải...</div>}>
+      <StripePage />
+    </Suspense>
   );
 }
