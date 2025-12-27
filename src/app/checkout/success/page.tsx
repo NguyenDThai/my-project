@@ -13,6 +13,7 @@ import {
 import { GoPackage } from "react-icons/go";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
+import InvoicePDF from "@/components/InvoicePDF";
 
 type ProductDetail = {
   _id?: string;
@@ -40,6 +41,7 @@ const SuccessPayment = () => {
   const searchParam = useSearchParams();
   const orderId = searchParam.get("orderId");
   const [orderDetail, setOrderDetail] = useState<OrderDetailType | null>(null);
+  const [showInvoice, setShowInvoice] = useState(false);
 
   useEffect(() => {
     if (!orderId) return;
@@ -81,10 +83,21 @@ const SuccessPayment = () => {
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-              <button className="flex items-center justify-center gap-2 bg-orange-600 hover:bg-orange-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 hover:shadow-lg">
+              <button
+                onClick={() => setShowInvoice(true)}
+                className="flex items-center justify-center gap-2 bg-orange-600 hover:bg-orange-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 hover:shadow-lg"
+              >
                 <FaDownload className="w-5 h-5" />
                 Tải hóa đơn
               </button>
+
+              {orderDetail && (
+                <InvoicePDF
+                  orderDetail={orderDetail}
+                  isOpen={showInvoice}
+                  onClose={() => setShowInvoice(false)}
+                />
+              )}
               <Link
                 href="/user/order"
                 className="flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-3 px-6 rounded-lg transition-colors duration-200"
