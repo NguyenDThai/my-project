@@ -11,9 +11,8 @@ import {
   FaShoppingBag,
 } from "react-icons/fa";
 import { GoPackage } from "react-icons/go";
-import { LuShare2 } from "react-icons/lu";
-import { RiMvAiLine } from "react-icons/ri";
 import { useSearchParams } from "next/navigation";
+import Image from "next/image";
 
 type ProductDetail = {
   _id?: string;
@@ -34,6 +33,7 @@ type OrderDetailType = {
   deliveryMethod: string;
   shippingFee: number;
   paymentStatus: string;
+  createdAt: string;
 };
 
 const SuccessPayment = () => {
@@ -49,27 +49,8 @@ const SuccessPayment = () => {
       .then((data) => setOrderDetail(data));
   }, [orderId]);
 
-  // Mock data - bạn có thể thay thế bằng dữ liệu thực từ API
-  const orderDetails = {
-    orderId: "ORD-789456",
-    date: new Date().toLocaleDateString("vi-VN"),
-    time: new Date().toLocaleTimeString("vi-VN", {
-      hour: "2-digit",
-      minute: "2-digit",
-    }),
-    amount: "1,250,000 ₫",
-    paymentMethod: "Thẻ Visa - **** 4242",
-    customerEmail: "customer@example.com",
-    estimatedDelivery: "3-5 ngày làm việc",
-    items: [
-      { name: "Áo thun Premium", quantity: 2, price: "250,000 ₫" },
-      { name: "Quần jeans Slim Fit", quantity: 1, price: "450,000 ₫" },
-      { name: "Giày thể thao", quantity: 1, price: "300,000 ₫" },
-    ],
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white mt-20">
+    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white mt-20">
       <main className="container mx-auto px-4 py-8 md:py-12">
         {/* Success Card */}
         <div className="max-w-4xl mx-auto">
@@ -91,7 +72,7 @@ const SuccessPayment = () => {
             </p>
 
             {/* Order ID Badge */}
-            <div className="inline-flex items-center gap-3 bg-green-50 text-green-800 px-6 py-3 rounded-full mb-8">
+            <div className="inline-flex items-center gap-3 bg-orange-50 text-orbg-orange-800 px-6 py-3 rounded-full mb-8">
               <GoPackage className="w-5 h-5" />
               <span className="font-semibold">
                 Mã đơn hàng: {orderDetail?._id || orderId}
@@ -100,16 +81,12 @@ const SuccessPayment = () => {
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-              <button className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 hover:shadow-lg">
+              <button className="flex items-center justify-center gap-2 bg-orange-600 hover:bg-orange-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 hover:shadow-lg">
                 <FaDownload className="w-5 h-5" />
                 Tải hóa đơn
               </button>
-              <button className="flex items-center justify-center gap-2 border-2 border-gray-300 hover:border-green-600 text-gray-700 hover:text-green-600 font-medium py-3 px-6 rounded-lg transition-all duration-200">
-                <LuShare2 className="w-5 h-5" />
-                Chia sẻ
-              </button>
               <Link
-                href="/orders"
+                href="/user/order"
                 className="flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-3 px-6 rounded-lg transition-colors duration-200"
               >
                 Theo dõi đơn hàng
@@ -138,13 +115,22 @@ const SuccessPayment = () => {
                         key={index}
                         className="flex justify-between items-center p-3 bg-gray-50 rounded-lg"
                       >
-                        <div>
-                          <p className="font-medium text-gray-900">
-                            {item?.name}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            Số lượng: {item?.quantity}
-                          </p>
+                        <div className="flex items-center gap-3">
+                          <Image
+                            src={item.image}
+                            width={600}
+                            height={600}
+                            className="w-10 h-10"
+                            alt="avatar"
+                          />
+                          <div>
+                            <p className="font-medium text-gray-900">
+                              {item?.name}
+                            </p>
+                            <p className="text-sm text-gray-500">
+                              Số lượng: {item?.quantity}
+                            </p>
+                          </div>
                         </div>
                         <p className="font-semibold text-gray-900">
                           {item.price.toLocaleString()}
@@ -172,11 +158,13 @@ const SuccessPayment = () => {
                     <span className="text-lg font-bold text-gray-900">
                       Tổng cộng:
                     </span>
-                    <span className="text-2xl font-bold text-green-600">
-                      {(
-                        (orderDetail?.totalPrice ?? 0) +
-                        (orderDetail?.shippingFee ?? 0)
-                      ).toLocaleString()}
+                    <span className="text-2xl font-bold text-orange-600">
+                      {orderDetail?.deliveryMethod === "pickup"
+                        ? ((orderDetail?.totalPrice || 0) + 0).toLocaleString()
+                        : (
+                            (orderDetail?.totalPrice || 0) +
+                            (orderDetail?.shippingFee || 0)
+                          ).toLocaleString()}
                     </span>
                   </div>
                 </div>
@@ -200,9 +188,7 @@ const SuccessPayment = () => {
                       <h3 className="font-semibold text-gray-900">
                         Thời gian giao hàng dự kiến
                       </h3>
-                      <p className="text-gray-600">
-                        {orderDetails.estimatedDelivery}
-                      </p>
+                      <p className="text-gray-600">3-5 ngày làm việc</p>
                     </div>
                   </div>
 
@@ -215,24 +201,11 @@ const SuccessPayment = () => {
                         Thời gian đặt hàng
                       </h3>
                       <p className="text-gray-600">
-                        {orderDetails.date} - {orderDetails.time}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <RiMvAiLine className="w-5 h-5 text-green-600" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900">
-                        Email xác nhận
-                      </h3>
-                      <p className="text-gray-600 break-all">
-                        {orderDetails.customerEmail}
-                      </p>
-                      <p className="text-sm text-gray-500 mt-1">
-                        Hóa đơn đã được gửi đến email của bạn
+                        {orderDetail?.createdAt
+                          ? new Date(orderDetail.createdAt).toLocaleString(
+                              "vi-VN"
+                            )
+                          : "N/A"}
                       </p>
                     </div>
                   </div>
@@ -250,9 +223,7 @@ const SuccessPayment = () => {
                     <span className="text-gray-600">
                       Phương thức thanh toán:
                     </span>
-                    <span className="font-medium text-gray-900">
-                      {orderDetails.paymentMethod}
-                    </span>
+                    <span className="font-medium text-gray-900">ATM</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Trạng thái:</span>
