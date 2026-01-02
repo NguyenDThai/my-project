@@ -38,7 +38,7 @@ const LoginPage = () => {
     }
   };
 
-  const handleLogin = (tittle: "google" | "github") => {
+  const handleLogin = (tittle: "google" | "github" | "facebook") => {
     setLoading(true);
     signIn(tittle, { callbackUrl: "/" });
   };
@@ -164,6 +164,25 @@ const LoginPage = () => {
             </div>
           ) : (
             "Đăng nhập Github"
+          )}
+        </button>
+        <button
+          type="button"
+          onClick={() => handleLogin("facebook")}
+          disabled={loading}
+          className={`w-full max-h-15 bg-gradient-to-r bg-orange-600 text-white py-3 rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg ${
+            loading
+              ? "opacity-50 cursor-not-allowed"
+              : "hover:bg-white hover:text-orange-500 hover:border hover:border-orange-500"
+          }`}
+        >
+          {loading ? (
+            <div className="flex items-center justify-center">
+              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+              Đang đăng nhập...
+            </div>
+          ) : (
+            "Đăng nhập FaceBook"
           )}
         </button>
 
