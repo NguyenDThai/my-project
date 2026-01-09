@@ -14,7 +14,7 @@ const PaymentMethod = ({ setMethodPayment }: any) => {
         <option>Chọn phương thức thanh toán</option>
         <option value="cod">Thanh toán khi nhận hàng</option>
         <option value="atm">Thanh toán ATM</option>
-        <option value="zalopay">Thanh toán Zalo Pay</option>
+        <option value="vietqr">Thanh toán Viet QR</option>
       </select>
     </div>
   );

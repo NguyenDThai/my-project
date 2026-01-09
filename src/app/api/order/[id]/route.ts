@@ -9,7 +9,6 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    console.log(id);
 
     // 🚨 BẮT BUỘC check
     if (!id || id === "null" || !mongoose.Types.ObjectId.isValid(id)) {

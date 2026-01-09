@@ -3,8 +3,8 @@
 
 import StepOrderOne from "@/components/StepOrderOne";
 import StepOrderTwo from "@/components/StepOrderTwo";
+import VietQRModal from "@/components/VietQRModal";
 
-import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
@@ -16,6 +16,8 @@ import { toast } from "react-toastify";
 const CheckoutPage = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [user, setUser] = useState({});
+  const [showVietQR, setShowVietQR] = useState(false);
+  const [currentOrder, setCurrentOrder] = useState<any>(null);
 
   const stepTwoRef = useRef<any>(null);
   const router = useRouter();
@@ -38,6 +40,10 @@ const CheckoutPage = () => {
     },
   ];
 
+  const order = async (payload: any) => {
+    await stepTwoRef.current.createOrder(payload);
+  };
+
   // Lấy thông tin user lên đơn hàng
 
   const fetchUser = async () => {
@@ -51,41 +57,61 @@ const CheckoutPage = () => {
   }, []);
 
   const handleNextStep = async () => {
-    if (currentStep === 2 && stepTwoRef.current) {
-      const result = await stepTwoRef.current.createOrder();
-      if (!result) return;
+    if (currentStep !== 2 || !stepTwoRef.current) return;
+    const payload = stepTwoRef.current.getOrderPayload();
 
-      const { order, methodPayment } = result;
+    if (!payload) return;
 
-      // cod
+    const { methodPayment } = payload;
 
-      if (methodPayment === "cod") {
-        toast.success("Đặt hàng thành công");
-        setCurrentStep(3);
-        return;
-      }
+    // cod
+    if (methodPayment === "cod") {
+      await order(payload);
+      if (!order) return;
+      toast.success("Đặt hàng thành công");
+      setCurrentStep(3);
+      return;
+    }
 
-      // atm - stripe
+    // Atm
+    if (methodPayment === "atm") {
+      const order = await stepTwoRef.current.createOrder(payload);
+      if (!order) return;
 
-      if (methodPayment === "atm") {
-        const res = await fetch("/api/payment/stripe", {
-          method: "POST",
-          headers: {
-            "Content-type": "application/json",
-          },
-          body: JSON.stringify({
-            orderId: order._id,
-            amount: order.totalPrice + order.shippingFee,
-          }),
-        });
+      const res = await fetch("/api/payment/stripe", {
+        method: "POST",
+        headers: { "Content-type": "application/json" },
+        body: JSON.stringify({
+          orderId: order._id,
+          amount: order.totalPrice + order.shippingFee,
+        }),
+      });
 
-        const { clientSecret } = await res.json();
-        router.push(`/checkout/stripe?cs=${clientSecret}&orderId=${order._id}`);
+      const { clientSecret } = await res.json();
+      router.push(`/checkout/stripe?cs=${clientSecret}&orderId=${order._id}`);
+      return;
+    }
 
-        return;
-      }
+    // VietQr
+    if (methodPayment === "vietqr") {
+      setShowVietQR(true);
+      setCurrentOrder(payload);
+      return;
     }
   };
+
+  const handlePaymented = async () => {
+    const order = await stepTwoRef.current.createOrder(currentOrder);
+    if (!order) return;
+    toast.success("Đặt hàng thành công");
+    setShowVietQR(false);
+    setCurrentStep(3);
+  };
+
+  const finalAmount =
+    currentOrder?.deliveryMethod === "pickup"
+      ? currentOrder?.total
+      : currentOrder?.total + currentOrder?.shippingFee;
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 mt-20">
@@ -202,6 +228,25 @@ const CheckoutPage = () => {
           </div>
         </div>
       </div>
+
+      {showVietQR && currentOrder && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="relative">
+            {/* Nút đóng Modal */}
+            <button
+              className="absolute -top-10 right-0 text-white cursor-pointer"
+              onClick={() => setShowVietQR(false)}
+            >
+              Đóng [X]
+            </button>
+
+            <VietQRModal
+              amount={finalAmount}
+              handlePaymented={handlePaymented}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

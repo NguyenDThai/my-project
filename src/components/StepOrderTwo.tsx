@@ -26,7 +26,7 @@ type User = {
 };
 
 export type OrderMethod = "delivery" | "pickup";
-type PaymentMethodType = "cod" | "atm" | "zalopay";
+type PaymentMethodType = "cod" | "atm" | "zalopay" | "vietqr";
 
 const StepOrderTwo = forwardRef(
   ({ user, onSuccessOrder, fetchUser }: any, ref) => {
@@ -143,7 +143,7 @@ const StepOrderTwo = forwardRef(
     };
 
     // Hàm xử lý api cho đơn hàng
-    const handleCreateOrder = async () => {
+    const handleCreateOrder = async (payload: any) => {
       if (!formData.name || !formData.address || !formData.phone) {
         toast.error("Vui lòng nhập đầy đủ thông tin giao hàng");
         return;
@@ -154,17 +154,7 @@ const StepOrderTwo = forwardRef(
       try {
         const res = await fetch("/api/order", {
           method: "POST",
-          body: JSON.stringify({
-            name: formData.name,
-            address: formData.address,
-            phone: formData.phone,
-            note: formData.note,
-            cart,
-            total,
-            shippingFee,
-            deliveryMethod: selectedMethod,
-            methodPayment,
-          }),
+          body: JSON.stringify(payload),
           headers: {
             "Content-type": "application/json",
           },
@@ -177,10 +167,7 @@ const StepOrderTwo = forwardRef(
           return null;
         }
 
-        return {
-          order: data.order,
-          methodPayment,
-        };
+        return data.order;
       } catch (error) {
         console.error("Lỗi khi tạo đơn hàng:", error);
         toast.error("Đã xảy ra lỗi, vui lòng thử lại");
@@ -189,8 +176,28 @@ const StepOrderTwo = forwardRef(
       }
     };
 
+    const getOrderPayload = () => {
+      if (!formData.name || !formData.address || !formData.phone) {
+        toast.error("Vui lòng nhập đầy đủ thông tin giao hàng");
+        return null;
+      }
+
+      return {
+        name: formData.name,
+        address: formData.address,
+        phone: formData.phone,
+        note: formData.note,
+        cart,
+        total,
+        shippingFee,
+        deliveryMethod: selectedMethod,
+        methodPayment,
+      };
+    };
+
     useImperativeHandle(ref, () => ({
       createOrder: handleCreateOrder,
+      getOrderPayload,
     }));
 
     return (
