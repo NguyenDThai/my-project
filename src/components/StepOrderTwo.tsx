@@ -26,7 +26,7 @@ type User = {
 };
 
 export type OrderMethod = "delivery" | "pickup";
-type PaymentMethodType = "cod" | "atm" | "zalopay" | "vietqr";
+type PaymentMethodType = "cod" | "atm" | "zalopay" | "vietqr" | "vnpay";
 
 const StepOrderTwo = forwardRef(
   ({ user, onSuccessOrder, fetchUser }: any, ref) => {

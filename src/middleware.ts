@@ -1,14 +1,34 @@
 import { withAuth } from "next-auth/middleware";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 export default withAuth(
   function middleware(request) {
     const role = request.nextauth.token?.role;
-    const pathName = request.nextUrl.pathname;
+    const pathname = request.nextUrl.pathname;
 
-    if (pathName.startsWith("/admin") && role !== "admin") {
+    // Chặn admin
+    if (pathname.startsWith("/admin") && role !== "admin") {
       return NextResponse.redirect(new URL("/", request.url));
     }
+
+    // 👉 Tạo response để gắn CSP
+    const response = NextResponse.next();
+
+    response.headers.set(
+      "Content-Security-Policy",
+      `
+        default-src 'self';
+        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://sandbox.vnpayment.vn;
+        style-src 'self' 'unsafe-inline';
+        img-src 'self' data:;
+        connect-src 'self';
+        frame-src https://sandbox.vnpayment.vn;
+      `
+        .replace(/\s{2,}/g, " ")
+        .trim()
+    );
+
+    return response;
   },
   {
     callbacks: {

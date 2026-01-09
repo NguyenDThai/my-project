@@ -98,6 +98,29 @@ const CheckoutPage = () => {
       setCurrentOrder(payload);
       return;
     }
+
+    if (methodPayment === "vnpay") {
+      const order = await stepTwoRef.current.createOrder(payload);
+
+      const totalPrice =
+        order.deliveryMethod === "pickup"
+          ? order.totalPrice
+          : order.totalPrice + order.shippingFee;
+      if (!order) return;
+      const res = await fetch("/api/vnpay/create", {
+        method: "POST",
+        headers: { "Content-type": "application/json" },
+        body: JSON.stringify({
+          orderId: order._id,
+          amount: totalPrice,
+        }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        window.location.href = data.paymentUrl;
+        return;
+      }
+    }
   };
 
   const handlePaymented = async () => {
