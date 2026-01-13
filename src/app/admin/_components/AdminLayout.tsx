@@ -8,6 +8,7 @@ import BtnSignOut from "@/components/BtnSignOut";
 import { FaUsers } from "react-icons/fa6";
 import { IoFastFood } from "react-icons/io5";
 import { FaComment } from "react-icons/fa";
+import { VscFeedback } from "react-icons/vsc";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function AdminSidebar({ session }: any) {
@@ -117,6 +118,16 @@ export default function AdminSidebar({ session }: any) {
                 <FaComment size={20} />
               </div>
               <span className="font-semibold text-lg">Quản lý đánh giá</span>
+            </Link>
+            <Link
+              href="/admin/feedbacks"
+              className="flex items-center gap-4 py-4 px-4 rounded-2xl hover:bg-white/20 transition-all duration-300 group border border-white/10 hover:border-white/30"
+              onClick={() => setIsOpen(false)}
+            >
+              <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center group-hover:bg-white/30 transition-colors">
+                <VscFeedback size={20} />
+              </div>
+              <span className="font-semibold text-lg">Quản lý phản hồi</span>
             </Link>
 
             <Link

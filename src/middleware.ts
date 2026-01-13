@@ -14,19 +14,22 @@ export default withAuth(
     // 👉 Tạo response để gắn CSP
     const response = NextResponse.next();
 
-    response.headers.set(
-      "Content-Security-Policy",
-      `
-        default-src 'self';
-        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://sandbox.vnpayment.vn;
-        style-src 'self' 'unsafe-inline';
-        img-src 'self' data:;
-        connect-src 'self';
-        frame-src https://sandbox.vnpayment.vn;
-      `
-        .replace(/\s{2,}/g, " ")
-        .trim()
-    );
+    // 👉 CHỈ bật CSP ở production
+    if (process.env.NODE_ENV === "production") {
+      response.headers.set(
+        "Content-Security-Policy",
+        `
+          default-src 'self';
+          script-src 'self' 'unsafe-inline' 'unsafe-eval' https://sandbox.vnpayment.vn;
+          style-src 'self' 'unsafe-inline';
+          img-src 'self' data:;
+          connect-src 'self' https://*.ngrok-free.app https://sandbox.vnpayment.vn;
+          frame-src https://sandbox.vnpayment.vn;
+        `
+          .replace(/\s{2,}/g, " ")
+          .trim()
+      );
+    }
 
     return response;
   },

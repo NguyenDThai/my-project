@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { motion } from "framer-motion";
@@ -40,7 +41,7 @@ const ContactPage = () => {
     {
       icon: "📍",
       title: "Khu Vực Phục Vụ",
-      info: "Toàn TP.HCM",
+      info: "Toàn TP. Cần Thơ",
       description: "Giao hàng nhanh trong 30-45 phút",
       action: null,
     },
@@ -85,17 +86,34 @@ const ContactPage = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    setTimeout(() => {
-      setIsSubmitting(false);
-      toast.success("Cảm ơn bạn! Chúng tôi sẽ liên hệ lại sớm nhất.");
+    try {
+      const res = await fetch("/api/feedback", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Gửi phản hồi thất bại");
+      }
+
+      toast.success("Cảm ơn bạn! Phản hồi của bạn đang chờ duyệt");
       setFormData({
         name: "",
-        email: "",
         phone: "",
         subject: "",
         message: "",
+        email: "",
       });
-    }, 2000);
+    } catch (error: any) {
+      toast.error(error.message || "Có lỗi xảy ra");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
